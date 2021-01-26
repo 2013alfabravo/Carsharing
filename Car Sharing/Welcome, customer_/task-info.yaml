@@ -818,6 +818,644 @@ files:
         }
     }
   learner_created: false
+- name: src/carsharing/view/ManagerActionsView.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import carsharing.Main;
+
+    public class ManagerActionsView implements View {
+        private static final Menu menu = new Menu().addItem("Company list", "1")
+                .addItem("Create a company", "2")
+                .addItem("Back", "0");
+
+        @Override
+        public String getInput() {
+            while (true) {
+                String input = Main.scanner.nextLine().strip();
+                if (menu.isValidKey(input)) {
+                    return input;
+                } else {
+                    displayErrorMessage();
+                }
+            }
+        }
+
+        @Override
+        public void display() {
+            System.out.println();
+            menu.show();
+        }
+
+        private void displayErrorMessage() {
+            System.out.println("Please enter a valid number.");
+        }
+    }
+  learner_created: true
+- name: src/carsharing/controller/Controller.java
+  visible: true
+  text: |
+    package carsharing.controller;
+
+    import carsharing.model.Car;
+    import carsharing.model.CarDAO;
+    import carsharing.model.Company;
+    import carsharing.model.CompanyDAO;
+    import carsharing.view.*;
+
+    import java.util.List;
+
+    public class Controller {
+        private View view;
+        private final CompanyDAO companyDAO;
+        private final CarDAO carDAO;
+
+        public Controller(CompanyDAO companyDAO, CarDAO carDAO) {
+            this.companyDAO = companyDAO;
+            this.carDAO = carDAO;
+        }
+
+        public void run() {
+            companyDAO.createTable();
+            carDAO.createTable();
+            displayMainMenu();
+        }
+
+        private void displayMainMenu() {
+            while (true) {
+                view = new MainMenuView();
+                view.display();
+                String input = view.getInput();
+                if ("1".equals(input)) {
+                    displayManagerActions();
+                } else if ("0".equals(input)) {
+                    break;
+                }
+            }
+        }
+
+        private void displayManagerActions() {
+            while (true) {
+                view = new ManagerActionsView();
+                view.display();
+                String input = view.getInput();
+                if ("1".equals(input)) {
+                    displayCompanies();
+
+                } else if ("2".equals(input)) {
+                    addCompany();
+                } else if ("0".equals(input)) {
+                    break;
+                }
+            }
+        }
+
+        private void addCompany() {
+            view = new NewCompanyView();
+            view.display();
+            String name = view.getInput();
+            companyDAO.addCompany(name);
+        }
+
+        private void displayCompanies() {
+            List<Company> companies = companyDAO.findAllCompanies();
+            view = new CompanyListView(companies);
+            view.display();
+
+            if (companies.isEmpty()) {
+                return;
+            }
+
+            int index = Integer.parseInt(view.getInput()) - 1;
+            if (index == -1) {
+                return;
+            }
+
+            Company company = companies.get(index);
+            showCompany(company);
+        }
+
+        private void showCompany(Company company) {
+            while (true) {
+                view = new CompanyView(company);
+                view.display();
+                String input = view.getInput();
+                if ("1".equals(input)) {
+                    displayCars(company);
+                } else if ("2".equals(input)) {
+                    addCar(company);
+                } else if ("0".equals(input)) {
+                    break;
+                }
+            }
+        }
+
+        private void addCar(Company company) {
+            view = new NewCarView();
+            view.display();
+            String name = view.getInput();
+            carDAO.addCar(name, company.getId());
+        }
+
+        private void displayCars(Company company) {
+            List<Car> cars = carDAO.getCarsByCompanyId(company.getId());
+            view = new CarListView(cars);
+            view.display();
+        }
+    }
+  learner_created: true
+- name: src/carsharing/model/Car.java
+  visible: true
+  text: |
+    package carsharing.model;
+
+    public class Car {
+        private int id;
+        private String name;
+        private int companyId;
+
+        public Car(int id, String name, int companyId) {
+            this.id = id;
+            this.name = name;
+            this.companyId = companyId;
+        }
+
+        @Override
+        public String toString() {
+            return id + ". " + name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+  learner_created: true
+- name: src/carsharing/db/carsharing.mv.db
+  visible: true
+  learner_created: true
+- name: src/carsharing/model/Company.java
+  visible: true
+  text: |
+    package carsharing.model;
+
+    public class Company {
+        private int id;
+        private String name;
+
+        public Company(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return id + ". " + name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+  learner_created: true
+- name: src/carsharing/view/View.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    public interface View {
+        String getInput();
+        void display();
+    }
+  learner_created: true
+- name: src/carsharing/db/carsharing.trace.db
+  visible: true
+  learner_created: true
+- name: src/carsharing/view/CompanyListView.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import carsharing.Main;
+    import carsharing.model.Company;
+
+    import java.util.List;
+
+    public class CompanyListView implements View {
+        private static final Menu menu = new Menu().addItem("Back", "0");
+
+        private final List<Company> list;
+
+        public CompanyListView(List<Company> list) {
+            this.list = list;
+        }
+
+        @Override
+        public String getInput() {
+            while (true) {
+                String input = Main.scanner.nextLine().strip();
+                if (input.matches("[0-9]+")) {
+                    int index = Integer.parseInt(input);
+                    if (index >= 0 && index <= list.size()) {
+                        return input;
+                    }
+                } else {
+                    displayInvalidIndexError();
+                }
+            }
+        }
+
+        @Override
+        public void display() {
+            if (list.isEmpty()) {
+                displayEmptyListError();
+            } else {
+                System.out.println("\nChoose a company:");
+                for (int i = 0; i < list.size(); i++) {
+                    System.out.println(i + 1 + ". " + list.get(i).getName());
+                }
+                menu.show();
+            }
+        }
+
+        private void displayEmptyListError() {
+            System.out.println("\nThe company list is empty!");
+        }
+
+        private void displayInvalidIndexError() {
+            System.out.println("Enter a valid index.");
+        }
+    }
+  learner_created: true
+- name: src/carsharing/view/NewCompanyView.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import carsharing.Main;
+
+    public class NewCompanyView implements View {
+        private String input;
+
+        @Override
+        public String getInput() {
+            return input;
+        }
+
+        @Override
+        public void display() {
+            System.out.println("\nEnter the company name:");
+            input = Main.scanner.nextLine().strip();
+            System.out.println("The company was created!");
+        }
+    }
+  learner_created: true
+- name: src/carsharing/view/CarListView.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import carsharing.model.Car;
+
+    import java.util.List;
+
+    public class CarListView implements View {
+        private final List<Car> list;
+
+        public CarListView(List<Car> list) {
+            this.list = list;
+        }
+
+        @Override
+        public String getInput() {
+            return null;
+        }
+
+        @Override
+        public void display() {
+            if (list.isEmpty()) {
+                displayEmptyListError();
+            } else {
+                System.out.println("\nCar list:");
+                for (int i = 0; i < list.size(); i++) {
+                    System.out.println(i + 1 + ". " + list.get(i).getName());
+                }
+            }
+        }
+
+        private void displayEmptyListError() {
+            System.out.println("\nThe car list is empty!");
+        }
+    }
+  learner_created: true
+- name: src/carsharing/model/CompanyDAO.java
+  visible: true
+  text: |
+    package carsharing.model;
+
+    import java.sql.*;
+    import java.util.ArrayList;
+    import java.util.List;
+
+    public class CompanyDAO {
+        private static final String DEFAULT_DB_NAME = "default_car_sharing_db";
+        private static final String PATH = "jdbc:h2:./src/carsharing/db/";
+        private static final String DRIVER = "org.h2.Driver";
+        private static final String SQL_CREATE_TABLE = "CREATE TABLE company (" +
+                "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
+                "name VARCHAR(255) UNIQUE NOT NULL" +
+                ")";
+
+        private final String dbFilename;
+
+        public CompanyDAO(String dbFilename) throws ClassNotFoundException {
+            this.dbFilename = PATH + dbFilename;
+            Class.forName(DRIVER);
+        }
+
+        public CompanyDAO() throws ClassNotFoundException {
+           this(DEFAULT_DB_NAME);
+        }
+
+        public void createTable() {
+            try (Connection conn = DriverManager.getConnection(dbFilename);
+                 Statement stmt = conn.createStatement()) {
+
+                conn.setAutoCommit(true);
+                stmt.executeUpdate(SQL_CREATE_TABLE);
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        public void addCompany(String name) {
+            String sql = "INSERT INTO company(id, name) VALUES(NULL, '" + name + "')";
+
+            if (findCompanyByName(name) != null) {
+                return;
+            }
+
+            try (Connection conn = DriverManager.getConnection(dbFilename);
+                 Statement stmt = conn.createStatement()) {
+
+                conn.setAutoCommit(true);
+                stmt.executeUpdate(sql);
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        public Company findCompanyByName(String name) {
+            String sql = "SELECT * FROM company WHERE name = " + name;
+            try (Connection conn = DriverManager.getConnection(dbFilename);
+                 Statement stmt = conn.createStatement()) {
+
+                conn.setAutoCommit(true);
+                ResultSet resultSet = stmt.executeQuery(sql);
+
+                int companyId = resultSet.getInt("id");
+                String companyName = resultSet.getString("name");
+                return new Company(companyId, companyName);
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                return null;
+            }
+        }
+
+        public List<Company> findAllCompanies() {
+            String sql = "SELECT * FROM company ORDER BY id";
+            List<Company> list = new ArrayList<>();
+            try (Connection conn = DriverManager.getConnection(dbFilename);
+                 Statement stmt = conn.createStatement()) {
+
+                conn.setAutoCommit(true);
+                ResultSet resultSet = stmt.executeQuery(sql);
+
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String name = resultSet.getString("name");
+                    list.add(new Company(id, name));
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return list;
+        }
+    }
+  learner_created: true
+- name: src/carsharing/view/MainMenuView.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import carsharing.Main;
+
+    public class MainMenuView implements View {
+        private static final Menu menu = new Menu()
+                .addItem("Log in as a manager", "1")
+                .addItem("Exit", "0");
+
+        @Override
+        public String getInput() {
+            while (true) {
+                String actionKey = Main.scanner.nextLine().strip();
+                if (menu.isValidKey(actionKey)) {
+                    return actionKey;
+                } else {
+                    System.out.println("Please enter a valid number.");
+                }
+            }
+        }
+
+        @Override
+        public void display() {
+            System.out.println();
+            menu.show();
+        }
+    }
+  learner_created: true
+- name: src/carsharing/view/CompanyView.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import carsharing.Main;
+    import carsharing.model.Company;
+
+    public class CompanyView implements View {
+        private static final Menu menu = new Menu()
+                .addItem("Car list", "1")
+                .addItem("Create a car", "2")
+                .addItem("Back", "0");
+
+        private final Company company;
+
+        public CompanyView(Company company) {
+            this.company = company;
+        }
+
+        @Override
+        public String getInput() {
+            while (true) {
+                String input = Main.scanner.nextLine().strip();
+                if (menu.isValidKey(input)) {
+                    return input;
+                } else {
+                    displayErrorMessage();
+                }
+            }
+        }
+
+        @Override
+        public void display() {
+            System.out.println("\n'" + company.getName() + "' company");
+            menu.show();
+        }
+
+        private void displayErrorMessage() {
+            System.out.println("Please enter a valid number.");
+        }
+    }
+  learner_created: true
+- name: src/carsharing/model/CarDAO.java
+  visible: true
+  text: |
+    package carsharing.model;
+
+    import java.sql.*;
+    import java.util.ArrayList;
+    import java.util.List;
+
+    public class CarDAO {
+        private static final String DEFAULT_DB_NAME = "default_car_sharing_db";
+        private static final String PATH = "jdbc:h2:./src/carsharing/db/";
+        private static final String DRIVER = "org.h2.Driver";
+        private static final String SQL_CREATE_TABLE = "CREATE TABLE car (" +
+                "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
+                "name VARCHAR(255) UNIQUE NOT NULL," +
+                "company_id INT NOT NULL, " +
+                "CONSTRAINT fk_company FOREIGN KEY (company_id) REFERENCES company(id)" +
+                ")";
+
+        private final String dbFilename;
+
+        public CarDAO(String dbFilename) throws ClassNotFoundException {
+            this.dbFilename = PATH + dbFilename;
+            Class.forName(DRIVER);
+        }
+
+        public CarDAO() throws ClassNotFoundException {
+            this(DEFAULT_DB_NAME);
+        }
+
+        public void createTable() {
+            try (Connection conn = DriverManager.getConnection(dbFilename);
+                 Statement stmt = conn.createStatement()) {
+
+                conn.setAutoCommit(true);
+                stmt.executeUpdate(SQL_CREATE_TABLE);
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        public void addCar(String name, int companyId) {
+            String sql = "INSERT INTO car(" +
+                    "id, name, company_id) " +
+                    "VALUES(NULL, '" + name + "', " + companyId + ")";
+
+            try (Connection conn = DriverManager.getConnection(dbFilename);
+                 Statement stmt = conn.createStatement()) {
+
+                conn.setAutoCommit(true);
+                stmt.executeUpdate(sql);
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        public List<Car> getCarsByCompanyId(int companyId) {
+            String sql = "SELECT * FROM car WHERE company_id = " + companyId + " ORDER BY id";
+            List<Car> list = new ArrayList<>();
+            try (Connection conn = DriverManager.getConnection(dbFilename);
+                 Statement stmt = conn.createStatement()) {
+
+                conn.setAutoCommit(true);
+                ResultSet resultSet = stmt.executeQuery(sql);
+
+                while (resultSet.next()) {
+                    int carId = resultSet.getInt("id");
+                    String name = resultSet.getString("name");
+                    int carCompanyId = resultSet.getInt("company_id");
+                    list.add(new Car(carId, name, carCompanyId));
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return list;
+        }
+    }
+  learner_created: true
+- name: src/carsharing/view/Menu.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import java.util.*;
+
+    public class Menu {
+        private final List<String> items = new ArrayList<>();
+        private final List<String> aKeys = new ArrayList<>();
+
+        public void show() {
+            items.forEach(System.out::println);
+        }
+
+        public Menu addItem(String title, String aKey) {
+            items.add(aKey + ". " + title);
+            aKeys.add(aKey);
+            return this;
+        }
+
+        public boolean isValidKey(String aKey) {
+            return aKeys.contains(aKey);
+        }
+    }
+  learner_created: true
+- name: src/carsharing/view/NewCarView.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import carsharing.Main;
+
+    public class NewCarView implements View {
+        private String input;
+
+        @Override
+        public String getInput() {
+            return input;
+        }
+
+        @Override
+        public void display() {
+            System.out.println("\nEnter the car name:");
+            input = Main.scanner.nextLine().strip();
+            System.out.println("The car was added!");
+        }
+    }
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/140/stages/761/implement#comment
 status: Unchecked
 record: -1
