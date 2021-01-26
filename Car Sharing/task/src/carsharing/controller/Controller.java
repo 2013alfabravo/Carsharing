@@ -101,7 +101,7 @@ public class Controller {
     }
 
     private void displayCars(Company company) {
-        List<Car> cars = carDAO.getCarsByCompanyId(company.getId());
+        List<Car> cars = carDAO.findCarsByCompanyId(company.getId());
         view = new CarListView(cars);
         view.display();
     }

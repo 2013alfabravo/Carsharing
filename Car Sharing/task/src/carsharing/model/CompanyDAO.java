@@ -8,7 +8,7 @@ public class CompanyDAO {
     private static final String DEFAULT_DB_NAME = "default_car_sharing_db";
     private static final String PATH = "jdbc:h2:./src/carsharing/db/";
     private static final String DRIVER = "org.h2.Driver";
-    private static final String SQL_CREATE_TABLE = "CREATE TABLE company (" +
+    private static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS company (" +
             "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
             "name VARCHAR(255) UNIQUE NOT NULL" +
             ")";

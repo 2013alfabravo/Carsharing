@@ -54,7 +54,7 @@ public class CarDAO {
         }
     }
 
-    public List<Car> getCarsByCompanyId(int companyId) {
+    public List<Car> findCarsByCompanyId(int companyId) {
         String sql = "SELECT * FROM car WHERE company_id = " + companyId + " ORDER BY id";
         List<Car> list = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(dbFilename);

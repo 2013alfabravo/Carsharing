@@ -1456,6 +1456,15 @@ files:
 - name: src/carsharing/model/CustomerDAO.java
   visible: true
   learner_created: true
+- name: src/carsharing/view/NewCustomerView.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/view/CustomerListView.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/view/CustomerView.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/140/stages/761/implement#comment
 status: Unchecked
 record: -1
