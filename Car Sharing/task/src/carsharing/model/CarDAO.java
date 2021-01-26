@@ -75,18 +75,4 @@ public class CarDAO {
         }
         return list;
     }
-
-    public void dropTable() {
-        String sql = "DROP TABLE IF EXISTS car";
-
-        try (Connection conn = DriverManager.getConnection(dbFilename);
-             Statement stmt = conn.createStatement()) {
-
-            conn.setAutoCommit(true);
-            stmt.executeUpdate(sql);
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
 }

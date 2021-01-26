@@ -22,8 +22,6 @@ public class Controller {
         companyDAO.createTable();
         carDAO.createTable();
         displayMainMenu();
-//        carDAO.dropTable();
-//        companyDAO.dropTable();
     }
 
     private void displayMainMenu() {

@@ -92,18 +92,4 @@ public class CompanyDAO {
         }
         return list;
     }
-
-    public void dropTable() {
-        String sql = "DROP TABLE IF EXISTS company";
-
-        try (Connection conn = DriverManager.getConnection(dbFilename);
-             Statement stmt = conn.createStatement()) {
-
-            conn.setAutoCommit(true);
-            stmt.executeUpdate(sql);
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
 }

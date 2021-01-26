@@ -4,8 +4,6 @@ import carsharing.Main;
 
 public class MainMenuView implements View {
     private static final Menu menu = new Menu()
-            // fixme remove new lines before menu titles and add new lines at the ends of lists
-            //  and before returns in getInput() where necessary
             .addItem("Log in as a manager", "1")
             .addItem("Exit", "0");
 
