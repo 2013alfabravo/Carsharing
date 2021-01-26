@@ -1,4 +1,4 @@
-package carsharing;
+package carsharing.controller;
 
 import carsharing.model.Company;
 import carsharing.model.DataAccessObject;
