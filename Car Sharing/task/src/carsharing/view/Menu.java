@@ -7,7 +7,6 @@ public class Menu {
     private final List<String> aKeys = new ArrayList<>();
 
     public void show() {
-        System.out.println();
         items.forEach(System.out::println);
     }
 

@@ -1,29 +1,32 @@
 package carsharing.controller;
 
+import carsharing.model.Car;
+import carsharing.model.CarDAO;
 import carsharing.model.Company;
-import carsharing.model.DataAccessObject;
+import carsharing.model.CompanyDAO;
 import carsharing.view.*;
 
 import java.util.List;
 
 public class Controller {
     private View view;
-    private final View mainMenu = new MainMenuView();
-    private final View managerActions = new ManagerActionsView();
-    private final DataAccessObject dao;
+    private final CompanyDAO companyDAO;
+    private final CarDAO carDAO;
 
-    public Controller(DataAccessObject dao) {
-        this.dao = dao;
+    public Controller(CompanyDAO companyDAO, CarDAO carDAO) {
+        this.companyDAO = companyDAO;
+        this.carDAO = carDAO;
     }
 
     public void run() {
-        dao.createTable();
+        companyDAO.createTable();
+        carDAO.createTable();
         displayMainMenu();
     }
 
     private void displayMainMenu() {
         while (true) {
-            view = mainMenu;
+            view = new MainMenuView();
             view.display();
             String input = view.getInput();
             if ("1".equals(input)) {
@@ -36,7 +39,7 @@ public class Controller {
 
     private void displayManagerActions() {
         while (true) {
-            view = managerActions;
+            view = new ManagerActionsView();
             view.display();
             String input = view.getInput();
             if ("1".equals(input)) {
@@ -54,12 +57,48 @@ public class Controller {
         view = new NewCompanyView();
         view.display();
         String name = view.getInput();
-        dao.addCompany(name);
+        companyDAO.addCompany(name);
     }
 
     private void displayCompanies() {
-        List<Company> companies = dao.getAllCompanies();
+        List<Company> companies = companyDAO.getAllCompanies();
         view = new CompanyListView(companies);
+        view.display();
+
+        if (companies.isEmpty()) {
+            return;
+        }
+
+        int index = Integer.parseInt(view.getInput()) - 1;
+        Company company = companies.get(index);
+        showCompany(company);
+    }
+
+    private void showCompany(Company company) {
+        while (true) {
+            view = new CompanyView(company);
+            view.display();
+            String input = view.getInput();
+            if ("1".equals(input)) {
+                displayCars(company);
+            } else if ("2".equals(input)) {
+                addCar(company);
+            } else if ("0".equals(input)) {
+                break;
+            }
+        }
+    }
+
+    private void addCar(Company company) {
+        view = new NewCarView();
+        view.display();
+        String name = view.getInput();
+        carDAO.addCar(name, company.getId());
+    }
+
+    private void displayCars(Company company) {
+        List<Car> cars = carDAO.getCarsByCompanyId(company.getId());
+        view = new CarListView(cars);
         view.display();
     }
 }

@@ -1,5 +1,6 @@
 package carsharing.view;
 
+import carsharing.Main;
 import carsharing.model.Company;
 
 import java.util.List;
@@ -13,20 +14,34 @@ public class CompanyListView implements View {
 
     @Override
     public String getInput() {
-        return null;
+        while (true) {
+            String input = Main.scanner.nextLine().strip();
+            if (input.matches("[0-9]+")) {
+                int index = Integer.parseInt(input);
+                if (index > 0 && index <= list.size()) {
+                    return input;
+                }
+            } else {
+                displayInvalidIndexError();
+            }
+        }
     }
 
     @Override
     public void display() {
         if (list.isEmpty()) {
-            displayErrorMessage();
+            displayEmptyListError();
         } else {
-            System.out.println("\nCompany list:");
+            System.out.println("\nChoose a company:");
             list.forEach(System.out::println);
         }
     }
 
-    private void displayErrorMessage() {
-        System.out.println("The company list is empty!");
+    private void displayEmptyListError() {
+        System.out.println("\nThe company list is empty!");
+    }
+
+    private void displayInvalidIndexError() {
+        System.out.println("Enter a valid index.");
     }
 }

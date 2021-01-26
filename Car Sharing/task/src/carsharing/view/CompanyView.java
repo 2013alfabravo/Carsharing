@@ -1,11 +1,19 @@
 package carsharing.view;
 
 import carsharing.Main;
+import carsharing.model.Company;
 
-public class ManagerActionsView implements View {
-    private static final Menu menu = new Menu().addItem("Company list", "1")
-            .addItem("Create a company", "2")
+public class CompanyView implements View {
+    private static final Menu menu = new Menu()
+            .addItem("Car list", "1")
+            .addItem("Create a car", "2")
             .addItem("Back", "0");
+
+    private final Company company;
+
+    public CompanyView(Company company) {
+        this.company = company;
+    }
 
     @Override
     public String getInput() {
@@ -21,7 +29,7 @@ public class ManagerActionsView implements View {
 
     @Override
     public void display() {
-        System.out.println();
+        System.out.println("\n'" + company.getName() + "' company");
         menu.show();
     }
 
