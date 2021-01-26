@@ -182,12 +182,9 @@ files:
         }
     }
   learner_created: false
-- name: src/carsharing/db/carsharing.trace.db
-  visible: true
-  learner_created: true
 feedback_link: https://hyperskill.org/projects/140/stages/758/implement#comment
 status: Solved
 feedback:
   message: Congratulations!
-  time: Sun, 24 Jan 2021 04:40:45 UTC
-record: -1
+  time: Sun, 24 Jan 2021 05:58:51 UTC
+record: 1

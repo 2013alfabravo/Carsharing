@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/440790/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Thu, 01 Jan 1970 00:00:00 UTC
+update_date: Tue, 26 Jan 2021 02:29:49 UTC
 stages:
 - id: 758
   step: 11501
@@ -47,10 +47,24 @@ topics:
     theory_id: 7054
   - title: Basic data types
     theory_id: 7123
+  - title: Basic CREATE statement
+    theory_id: 9084
+  - title: Introduction to operating systems
+    theory_id: 9704
+  - title: Command line overview
+    theory_id: 8977
+  - title: Parameters and options
+    theory_id: 9746
+  - title: 'Hashing: overview'
+    theory_id: 9831
+  - title: Hash table
+    theory_id: 5364
   - title: Write, compile, and run
     theory_id: 3739
   - title: JVM, JRE, and JDK
     theory_id: 3499
+  - title: Running programs on your computer
+    theory_id: 3746
   - title: What is an exception
     theory_id: 3497
   - title: Hierarchy of exceptions
@@ -63,6 +77,10 @@ topics:
     theory_id: 3492
   - title: Generics and Object
     theory_id: 3493
+  - title: Files
+    theory_id: 3635
+  - title: Managing files
+    theory_id: 3648
   - title: What are collections
     theory_id: 3770
   - title: ArrayList
@@ -73,24 +91,6 @@ topics:
     theory_id: 3581
   - title: Set
     theory_id: 3575
-  - title: Basic CREATE statement
-    theory_id: 9084
-  - title: Introduction to operating systems
-    theory_id: 9704
-  - title: Command line overview
-    theory_id: 8977
-  - title: Parameters and options
-    theory_id: 9746
-  - title: Running programs on your computer
-    theory_id: 3746
-  - title: Files
-    theory_id: 3635
-  - title: Managing files
-    theory_id: 3648
-  - title: 'Hashing: overview'
-    theory_id: 9831
-  - title: Hash table
-    theory_id: 5364
   - title: Map
     theory_id: 3558
   - title: Introduction to Java

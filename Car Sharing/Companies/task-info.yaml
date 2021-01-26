@@ -331,6 +331,36 @@ files:
         }
     }
   learner_created: false
+- name: src/carsharing/model/Company.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/view/Menu.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/view/Action.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/view/MainMenuView.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/view/ManagerActionsView.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/view/View.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/model/DataAccessObject.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/Controller.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/view/CompanyListView.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/view/NewCompanyView.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/140/stages/759/implement#comment
 status: Unchecked
 record: -1

@@ -641,8 +641,8 @@ files:
 
             output = program.execute("2");
 
-            if (!output.contains("Customer list is empty!")) {
-                return wrong("If no customers were created you should print 'Customer list is empty!'");
+            if (!output.contains("The customer list is empty!")) {
+                return wrong("If no customers were created you should print 'The customer list is empty!'");
             }
 
             output = program.execute("3");
@@ -795,7 +795,7 @@ files:
 
             output = program.execute("2");
 
-            if (!output.contains("You returned rented car!")) {
+            if (!output.contains("You've returned a rented car!")) {
                 return wrong("If a customer has already rented a car and is trying to rent another one you should print 'You've already rented a car!'");
             }
 
