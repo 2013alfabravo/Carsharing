@@ -8,7 +8,7 @@ public class CompanyDAO {
     private static final String DEFAULT_DB_NAME = "default_car_sharing_db";
     private static final String PATH = "jdbc:h2:./src/carsharing/db/";
     private static final String DRIVER = "org.h2.Driver";
-    private static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS company (" +
+    private static final String SQL_CREATE_TABLE = "CREATE TABLE company (" +
             "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
             "name VARCHAR(255) UNIQUE NOT NULL" +
             ")";
@@ -38,6 +38,11 @@ public class CompanyDAO {
 
     public void addCompany(String name) {
         String sql = "INSERT INTO company(id, name) VALUES(NULL, '" + name + "')";
+
+        if (findCompanyByName(name) != null) {
+            return;
+        }
+
         try (Connection conn = DriverManager.getConnection(dbFilename);
              Statement stmt = conn.createStatement()) {
 
@@ -49,7 +54,25 @@ public class CompanyDAO {
         }
     }
 
-    public List<Company> getAllCompanies() {
+    public Company findCompanyByName(String name) {
+        String sql = "SELECT * FROM company WHERE name = " + name;
+        try (Connection conn = DriverManager.getConnection(dbFilename);
+             Statement stmt = conn.createStatement()) {
+
+            conn.setAutoCommit(true);
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            int companyId = resultSet.getInt("id");
+            String companyName = resultSet.getString("name");
+            return new Company(companyId, companyName);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Company> findAllCompanies() {
         String sql = "SELECT * FROM company ORDER BY id";
         List<Company> list = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(dbFilename);
@@ -68,5 +91,19 @@ public class CompanyDAO {
             ex.printStackTrace();
         }
         return list;
+    }
+
+    public void dropTable() {
+        String sql = "DROP TABLE IF EXISTS company";
+
+        try (Connection conn = DriverManager.getConnection(dbFilename);
+             Statement stmt = conn.createStatement()) {
+
+            conn.setAutoCommit(true);
+            stmt.executeUpdate(sql);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 }

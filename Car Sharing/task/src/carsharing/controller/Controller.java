@@ -22,6 +22,8 @@ public class Controller {
         companyDAO.createTable();
         carDAO.createTable();
         displayMainMenu();
+//        carDAO.dropTable();
+//        companyDAO.dropTable();
     }
 
     private void displayMainMenu() {
@@ -61,7 +63,7 @@ public class Controller {
     }
 
     private void displayCompanies() {
-        List<Company> companies = companyDAO.getAllCompanies();
+        List<Company> companies = companyDAO.findAllCompanies();
         view = new CompanyListView(companies);
         view.display();
 

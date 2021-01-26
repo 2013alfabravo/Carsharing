@@ -8,7 +8,7 @@ public class CarDAO {
     private static final String DEFAULT_DB_NAME = "default_car_sharing_db";
     private static final String PATH = "jdbc:h2:./src/carsharing/db/";
     private static final String DRIVER = "org.h2.Driver";
-    private static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS car (" +
+    private static final String SQL_CREATE_TABLE = "CREATE TABLE car (" +
             "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
             "name VARCHAR(255) UNIQUE NOT NULL," +
             "company_id INT NOT NULL, " +
@@ -74,5 +74,19 @@ public class CarDAO {
             ex.printStackTrace();
         }
         return list;
+    }
+
+    public void dropTable() {
+        String sql = "DROP TABLE IF EXISTS car";
+
+        try (Connection conn = DriverManager.getConnection(dbFilename);
+             Statement stmt = conn.createStatement()) {
+
+            conn.setAutoCommit(true);
+            stmt.executeUpdate(sql);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 }

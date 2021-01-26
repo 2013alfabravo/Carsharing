@@ -35,7 +35,9 @@ public class CompanyListView implements View {
             displayEmptyListError();
         } else {
             System.out.println("\nChoose a company:");
-            list.forEach(System.out::println);
+            for (int i = 0; i < list.size(); i++) {
+                System.out.println(i + 1 + ". " + list.get(i).getName());
+            }
             menu.show();
         }
     }
