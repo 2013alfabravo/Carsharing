@@ -6,6 +6,8 @@ import carsharing.model.Company;
 import java.util.List;
 
 public class CompanyListView implements View {
+    private static final Menu menu = new Menu().addItem("Back", "0");
+
     private final List<Company> list;
 
     public CompanyListView(List<Company> list) {
@@ -34,6 +36,7 @@ public class CompanyListView implements View {
         } else {
             System.out.println("\nChoose a company:");
             list.forEach(System.out::println);
+            menu.show();
         }
     }
 
