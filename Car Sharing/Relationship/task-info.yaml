@@ -541,6 +541,334 @@ files:
         }
     }
   learner_created: false
+- name: src/carsharing/model/DataAccessObject.java
+  visible: true
+  text: |
+    package carsharing.model;
+
+    import java.sql.*;
+    import java.util.ArrayList;
+    import java.util.List;
+
+    public class DataAccessObject {
+        private static final String DEFAULT_DB_NAME = "default_car_sharing_db";
+        private static final String PATH = "jdbc:h2:./src/carsharing/db/";
+        private static final String DRIVER = "org.h2.Driver";
+        private static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS company (" +
+                "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
+                "name VARCHAR(255) UNIQUE NOT NULL" +
+                ")";
+
+        private final String dbFilename;
+
+        public DataAccessObject(String dbFilename) throws ClassNotFoundException {
+            this.dbFilename = PATH + dbFilename;
+            Class.forName(DRIVER);
+        }
+
+        public DataAccessObject() throws ClassNotFoundException {
+           this(DEFAULT_DB_NAME);
+        }
+
+        public void createTable() {
+            try (Connection conn = DriverManager.getConnection(dbFilename);
+                 Statement stmt = conn.createStatement()) {
+
+                conn.setAutoCommit(true);
+                stmt.executeUpdate(SQL_CREATE_TABLE);
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        public void addCompany(String name) {
+            String sql = "INSERT INTO company(id, name) VALUES(NULL, '" + name + "')";
+            try (Connection conn = DriverManager.getConnection(dbFilename);
+                 Statement stmt = conn.createStatement()) {
+
+                conn.setAutoCommit(true);
+                stmt.executeUpdate(sql);
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        public List<Company> getAllCompanies() {
+            String sql = "SELECT * FROM company ORDER BY id";
+            List<Company> list = new ArrayList<>();
+            try (Connection conn = DriverManager.getConnection(dbFilename);
+                 Statement stmt = conn.createStatement()) {
+
+                conn.setAutoCommit(true);
+                ResultSet resultSet = stmt.executeQuery(sql);
+
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String name = resultSet.getString("name");
+                    list.add(new Company(id, name));
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return list;
+        }
+    }
+  learner_created: true
+- name: src/carsharing/view/ManagerActionsView.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import carsharing.Main;
+
+    public class ManagerActionsView implements View {
+        private static final Menu menu = new Menu().addItem("Company list", "1")
+                .addItem("Create a company", "2")
+                .addItem("Back", "0");
+
+        @Override
+        public String getInput() {
+            while (true) {
+                String input = Main.scanner.nextLine().strip();
+                if (menu.isValidKey(input)) {
+                    return input;
+                } else {
+                    displayErrorMessage();
+                }
+            }
+        }
+
+        @Override
+        public void display() {
+            menu.show();
+        }
+
+        private void displayErrorMessage() {
+            System.out.println("Please enter a valid number.");
+        }
+    }
+  learner_created: true
+- name: src/carsharing/controller/Controller.java
+  visible: true
+  text: |
+    package carsharing.controller;
+
+    import carsharing.model.Company;
+    import carsharing.model.DataAccessObject;
+    import carsharing.view.*;
+
+    import java.util.List;
+
+    public class Controller {
+        private View view;
+        private final View mainMenu = new MainMenuView();
+        private final View managerActions = new ManagerActionsView();
+        private final DataAccessObject dao;
+
+        public Controller(DataAccessObject dao) {
+            this.dao = dao;
+        }
+
+        public void run() {
+            dao.createTable();
+            displayMainMenu();
+        }
+
+        private void displayMainMenu() {
+            while (true) {
+                view = mainMenu;
+                view.display();
+                String input = view.getInput();
+                if ("1".equals(input)) {
+                    displayManagerActions();
+                } else if ("0".equals(input)) {
+                    break;
+                }
+            }
+        }
+
+        private void displayManagerActions() {
+            while (true) {
+                view = managerActions;
+                view.display();
+                String input = view.getInput();
+                if ("1".equals(input)) {
+                    displayCompanies();
+
+                } else if ("2".equals(input)) {
+                    addCompany();
+                } else if ("0".equals(input)) {
+                    break;
+                }
+            }
+        }
+
+        private void addCompany() {
+            view = new NewCompanyView();
+            view.display();
+            String name = view.getInput();
+            dao.addCompany(name);
+        }
+
+        private void displayCompanies() {
+            List<Company> companies = dao.getAllCompanies();
+            view = new CompanyListView(companies);
+            view.display();
+        }
+    }
+  learner_created: true
+- name: src/carsharing/db/carsharing.mv.db
+  visible: true
+  learner_created: true
+- name: src/carsharing/model/Company.java
+  visible: true
+  text: |
+    package carsharing.model;
+
+    public class Company {
+        private int id;
+        private String name;
+
+        public Company(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return id + ". " + name;
+        }
+    }
+  learner_created: true
+- name: src/carsharing/view/MainMenuView.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import carsharing.Main;
+
+    public class MainMenuView implements View {
+        private static final Menu menu = new Menu()
+                .addItem("Log in as a manager", "1")
+                .addItem("Exit", "0");
+
+        @Override
+        public String getInput() {
+            while (true) {
+                String actionKey = Main.scanner.nextLine().strip();
+                if (menu.isValidKey(actionKey)) {
+                    return actionKey;
+                } else {
+                    System.out.println("Please enter a valid number.");
+                }
+            }
+        }
+
+        @Override
+        public void display() {
+            menu.show();
+        }
+    }
+  learner_created: true
+- name: src/carsharing/view/View.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    public interface View {
+        String getInput();
+        void display();
+    }
+  learner_created: true
+- name: src/carsharing/view/CompanyListView.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import carsharing.model.Company;
+
+    import java.util.List;
+
+    public class CompanyListView implements View {
+        private final List<Company> list;
+
+        public CompanyListView(List<Company> list) {
+            this.list = list;
+        }
+
+        @Override
+        public String getInput() {
+            return null;
+        }
+
+        @Override
+        public void display() {
+            if (list.isEmpty()) {
+                displayErrorMessage();
+            } else {
+                System.out.println("\nCompany list:");
+                list.forEach(System.out::println);
+            }
+        }
+
+        private void displayErrorMessage() {
+            System.out.println("The company list is empty!");
+        }
+    }
+  learner_created: true
+- name: src/carsharing/view/NewCompanyView.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import carsharing.Main;
+
+    public class NewCompanyView implements View {
+        private String input;
+
+        @Override
+        public String getInput() {
+            return input;
+        }
+
+        @Override
+        public void display() {
+            System.out.println("\nEnter the company name:");
+            input = Main.scanner.nextLine().strip();
+            System.out.println("The company was created!");
+        }
+    }
+  learner_created: true
+- name: src/carsharing/view/Menu.java
+  visible: true
+  text: |
+    package carsharing.view;
+
+    import java.util.*;
+
+    public class Menu {
+        private final List<String> items = new ArrayList<>();
+        private final List<String> aKeys = new ArrayList<>();
+
+        public void show() {
+            System.out.println();
+            items.forEach(System.out::println);
+        }
+
+        public Menu addItem(String title, String aKey) {
+            items.add(aKey + ". " + title);
+            aKeys.add(aKey);
+            return this;
+        }
+
+        public boolean isValidKey(String aKey) {
+            return aKeys.contains(aKey);
+        }
+    }
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/140/stages/760/implement#comment
 status: Unchecked
 record: -1
