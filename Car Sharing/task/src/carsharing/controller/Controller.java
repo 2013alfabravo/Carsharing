@@ -70,6 +70,10 @@ public class Controller {
         }
 
         int index = Integer.parseInt(view.getInput()) - 1;
+        if (index == 0) {
+            return;
+        }
+
         Company company = companies.get(index);
         showCompany(company);
     }

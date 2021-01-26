@@ -18,7 +18,7 @@ public class CompanyListView implements View {
             String input = Main.scanner.nextLine().strip();
             if (input.matches("[0-9]+")) {
                 int index = Integer.parseInt(input);
-                if (index > 0 && index <= list.size()) {
+                if (index >= 0 && index <= list.size()) {
                     return input;
                 }
             } else {

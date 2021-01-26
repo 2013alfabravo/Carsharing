@@ -881,6 +881,58 @@ files:
 - name: src/carsharing/view/CompanyView.java
   visible: true
   learner_created: true
+- name: src/carsharing/db/carsharing.mv.db
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/140/stages/760/implement#comment
-status: Unchecked
+status: Failed
+feedback:
+  message: |-
+    Wrong answer in test #6
+
+    Can&#39;t find &#39;Another company&#39; company in the &#39;COMPANY&#39; table.
+
+    Please find below the output of your program during this failed test.
+    Note that the &#39;&gt;&#39; character indicates the beginning of the input line.
+
+    ---
+
+    Arguments: -databaseFileName carsharing
+
+
+    1. Log in as a manager
+    0. Exit
+    &gt; 1
+
+    1. Company list
+    2. Create a company
+    0. Back
+    &gt; 1
+
+    The company list is empty!
+
+    1. Company list
+    2. Create a company
+    0. Back
+    &gt; 2
+
+    Enter the company name:
+    &gt; Super company
+    The company was created!
+
+    1. Company list
+    2. Create a company
+    0. Back
+    &gt; 1
+
+    Choose a company:
+    1. Super company
+    &gt; 0
+    &gt; 2
+    &gt; Another company
+    Enter a valid index.
+    &gt; 2
+    &gt; One more company
+    Enter a valid index.
+  time: Tue, 26 Jan 2021 07:48:04 UTC
 record: -1
