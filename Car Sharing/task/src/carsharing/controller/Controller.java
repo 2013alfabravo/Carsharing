@@ -70,7 +70,7 @@ public class Controller {
         }
 
         int index = Integer.parseInt(view.getInput()) - 1;
-        if (index == 0) {
+        if (index == -1) {
             return;
         }
 
