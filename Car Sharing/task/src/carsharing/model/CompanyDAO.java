@@ -37,7 +37,7 @@ public class CompanyDAO {
     }
 
     public void addCompany(String name) {
-        String sql = "INSERT INTO company(id, name) VALUES(NULL, '" + name + "')";
+        String sql = "INSERT INTO company(name) VALUES('" + name + "')";
 
         if (findCompanyByName(name) != null) {
             return;

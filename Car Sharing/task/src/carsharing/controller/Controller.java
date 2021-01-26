@@ -1,9 +1,6 @@
 package carsharing.controller;
 
-import carsharing.model.Car;
-import carsharing.model.CarDAO;
-import carsharing.model.Company;
-import carsharing.model.CompanyDAO;
+import carsharing.model.*;
 import carsharing.view.*;
 
 import java.util.List;
@@ -12,15 +9,18 @@ public class Controller {
     private View view;
     private final CompanyDAO companyDAO;
     private final CarDAO carDAO;
+    private final CustomerDAO customerDAO;
 
-    public Controller(CompanyDAO companyDAO, CarDAO carDAO) {
+    public Controller(CompanyDAO companyDAO, CarDAO carDAO, CustomerDAO customerDAO) {
         this.companyDAO = companyDAO;
         this.carDAO = carDAO;
+        this.customerDAO = customerDAO;
     }
 
     public void run() {
         companyDAO.createTable();
         carDAO.createTable();
+        customerDAO.createTable();
         displayMainMenu();
     }
 
