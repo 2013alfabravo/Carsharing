@@ -30,6 +30,7 @@ public class CustomerView implements View {
 
     @Override
     public void display() {
+        System.out.println();
         menu.show();
     }
 

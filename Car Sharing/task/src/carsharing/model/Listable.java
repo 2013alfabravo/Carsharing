@@ -1,5 +1,5 @@
 package carsharing.model;
 
-public interface ListItem {
+public interface Listable {
     String getName();
 }

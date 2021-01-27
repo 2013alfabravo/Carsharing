@@ -3,6 +3,7 @@ package carsharing.controller;
 import carsharing.model.*;
 import carsharing.view.*;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 public class Controller {
@@ -31,6 +32,10 @@ public class Controller {
             String input = view.getInput();
             if ("1".equals(input)) {
                 displayManagerActions();
+            } else if ("2".equals(input)) {
+                displayCustomers();
+            } else if ("3".equals(input)) {
+                addCustomer();
             } else if ("0".equals(input)) {
                 break;
             }
@@ -44,13 +49,102 @@ public class Controller {
             String input = view.getInput();
             if ("1".equals(input)) {
                 displayCompanies();
-
             } else if ("2".equals(input)) {
                 addCompany();
             } else if ("0".equals(input)) {
                 break;
             }
         }
+    }
+
+    private void addCustomer() {
+        view = new NewRecordView("customer");
+        view.display();
+        String name = view.getInput();
+        // todo add display message to this view and show success message after dao method returns success
+        customerDAO.addCustomer(name);
+    }
+
+    private void displayCustomers() {
+        List<Customer> customers = customerDAO.findAllCustomers();
+        view = new ListView<>(customers, "customer");
+        view.display();
+
+        if (customers.isEmpty()) {
+            return;
+        }
+
+        int index = Integer.parseInt(view.getInput()) - 1;
+        if (index == -1) {
+            return;
+        }
+
+        Customer customer = customers.get(index);
+        showCustomer(customer);
+    }
+
+    private void showCustomer(Customer customer) {
+        while (true) {
+            view = new CustomerView(customer);
+            view.display();
+            String input = view.getInput();
+
+            if ("1".equals(input)) {
+                rentCar(customer);
+            } else if ("2".equals(input)) {
+                returnCar(customer);
+            } else if ("3".equals(input)) {
+                showRentedCar(customer);
+            } else if ("0".equals(input)) {
+                break;
+            }
+        }
+    }
+
+    private void showRentedCar(Customer customer) {
+        // fixme change to view
+        if (customer.getRentedCarId() == null) {
+            System.out.println("You didn't rent a car!");
+            return;
+        }
+
+        Car car = customerDAO.findRentedCar(customer);
+        System.out.println(MessageFormat.format("You rented '{0}'", car.getName()));
+    }
+
+    private void returnCar(Customer customer) {
+        System.out.println("returning the car");
+    }
+
+    private void rentCar(Customer customer) {
+        List<Company> companies = companyDAO.findAllCompanies();
+        view = new ListView<>(companies, "company");
+        view.display();
+
+        if (companies.isEmpty()) {
+            return;
+        }
+
+        int index = Integer.parseInt(view.getInput()) - 1;
+        if (index == -1) {
+            return;
+        }
+
+        Company company = companies.get(index);
+
+        List<Car> cars = carDAO.findAvailableCarsByCompanyId(company.getId());
+        view = new ListView<>(cars, "car");
+        view.display();
+
+        index = Integer.parseInt(view.getInput()) - 1;
+        if (index == -1) {
+            return;
+        }
+
+        Car car = cars.get(index);
+        customerDAO.addRentedCar(customer, car);
+        carDAO.setAvailable(car, false);
+        customer.setRentedCar(car.getId());
     }
 
     private void addCompany() {
@@ -102,6 +196,7 @@ public class Controller {
 
     private void displayCars(Company company) {
         List<Car> cars = carDAO.findCarsByCompanyId(company.getId());
+        // fixme change title to contain the entire list title, i.e. choose a ... or empty and don't print if empty
         view = new ListView<>(cars, "car");
         view.display();
     }

@@ -62,7 +62,8 @@ public class CustomerDAO {
 
             int customerId = resultSet.getInt("id");
             String customerName = resultSet.getString("name");
-            int hiredCarId = resultSet.getInt("rented_car_id");
+            int nullableInt = resultSet.getInt("rented_car_id");
+            Integer hiredCarId = nullableInt == 0 ? null : nullableInt;
             return new Customer(customerId, customerName, hiredCarId);
 
         } catch (SQLException ex) {
@@ -83,7 +84,8 @@ public class CustomerDAO {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
-                int carId = resultSet.getInt("rented_car_id");
+                int nullableInt = resultSet.getInt("rented_car_id");
+                Integer carId = nullableInt == 0 ? null : nullableInt;
                 list.add(new Customer(id, name, carId));
             }
 
@@ -91,5 +93,61 @@ public class CustomerDAO {
             ex.printStackTrace();
         }
         return list;
+    }
+
+    public void addRentedCar(Customer customer, Car car) {
+        int customerId = customer.getId();
+        int carId = car.getId();
+        String sql = "UPDATE customer SET rented_car_id = " + carId + " WHERE id = " + customerId;
+
+        try (Connection conn = DriverManager.getConnection(dbFilename);
+             Statement stmt = conn.createStatement()) {
+
+            conn.setAutoCommit(true);
+            stmt.executeUpdate(sql);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void removeRentedCar(Customer customer) {
+        String sql = "UPDATE customer SET rented_car_id = NULL WHERE id = " + customer.getId();
+
+        try (Connection conn = DriverManager.getConnection(dbFilename);
+             Statement stmt = conn.createStatement()) {
+
+            conn.setAutoCommit(true);
+            stmt.executeUpdate(sql);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public Car findRentedCar(Customer customer) {
+        String sql = "SELECT car.id, car.name, car.company_id FROM customer " +
+                "JOIN car ON customer.rented_car_id = car.id " +
+                "WHERE customer.id = " + customer.getId() + " LIMIT 1";
+
+        try (Connection conn = DriverManager.getConnection(dbFilename);
+             Statement stmt = conn.createStatement()) {
+
+            conn.setAutoCommit(true);
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            if (!resultSet.next()) {
+                return null;
+            }
+
+            int id = resultSet.getInt("car.id");
+            String name = resultSet.getString("car.name");
+            int companyId = resultSet.getInt("car.company_id");
+            return new Car(id, name, companyId);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

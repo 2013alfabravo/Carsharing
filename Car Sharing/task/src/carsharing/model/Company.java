@@ -1,6 +1,6 @@
 package carsharing.model;
 
-public class Company implements ListItem {
+public class Company implements Listable {
     private int id;
     private String name;
 

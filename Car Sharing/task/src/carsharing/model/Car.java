@@ -1,6 +1,6 @@
 package carsharing.model;
 
-public class Car implements ListItem {
+public class Car implements Listable {
     private int id;
     private String name;
     private int companyId;
@@ -18,5 +18,13 @@ public class Car implements ListItem {
 
     public String getName() {
         return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

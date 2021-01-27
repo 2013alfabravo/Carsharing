@@ -1,12 +1,13 @@
 package carsharing.view;
 
 import carsharing.Main;
-import carsharing.model.ListItem;
+import carsharing.model.Listable;
 
 import java.text.MessageFormat;
 import java.util.List;
 
-public class ListView<T extends ListItem> implements View {
+public class ListView<T extends Listable> implements View {
+    // fixme add parameter boolean showMenu
     private static final Menu menu = new Menu().addItem("Back", "0");
 
     private final List<T> list;

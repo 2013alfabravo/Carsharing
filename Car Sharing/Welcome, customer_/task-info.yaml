@@ -1029,100 +1029,6 @@ files:
         void display();
     }
   learner_created: true
-- name: src/carsharing/view/CompanyListView.java
-  visible: true
-  text: |
-    package carsharing.view;
-
-    import carsharing.Main;
-    import carsharing.model.Company;
-
-    import java.util.List;
-
-    public class CompanyListView implements View {
-        private static final Menu menu = new Menu().addItem("Back", "0");
-
-        private final List<Company> list;
-
-        public CompanyListView(List<Company> list) {
-            this.list = list;
-        }
-
-        @Override
-        public String getInput() {
-            while (true) {
-                String input = Main.scanner.nextLine().strip();
-                if (input.matches("[0-9]+")) {
-                    int index = Integer.parseInt(input);
-                    if (index >= 0 && index <= list.size()) {
-                        return input;
-                    }
-                } else {
-                    displayInvalidIndexError();
-                }
-            }
-        }
-
-        @Override
-        public void display() {
-            if (list.isEmpty()) {
-                displayEmptyListError();
-            } else {
-                System.out.println("\nChoose a company:");
-                for (int i = 0; i < list.size(); i++) {
-                    System.out.println(i + 1 + ". " + list.get(i).getName());
-                }
-                menu.show();
-            }
-        }
-
-        private void displayEmptyListError() {
-            System.out.println("\nThe company list is empty!");
-        }
-
-        private void displayInvalidIndexError() {
-            System.out.println("Enter a valid index.");
-        }
-    }
-  learner_created: true
-- name: src/carsharing/view/CarListView.java
-  visible: true
-  text: |
-    package carsharing.view;
-
-    import carsharing.model.Car;
-
-    import java.util.List;
-
-    public class CarListView implements View {
-        private final List<Car> list;
-
-        public CarListView(List<Car> list) {
-            this.list = list;
-        }
-
-        @Override
-        public String getInput() {
-            return null;
-        }
-
-        @Override
-        public void display() {
-            if (list.isEmpty()) {
-                displayEmptyListError();
-            } else {
-                System.out.println("\nCar list:");
-                for (int i = 0; i < list.size(); i++) {
-                    System.out.println(i + 1 + ". " + list.get(i).getName());
-                }
-            }
-        }
-
-        private void displayEmptyListError() {
-            System.out.println("\nThe car list is empty!");
-        }
-    }
-  learner_created: true
 - name: src/carsharing/model/CompanyDAO.java
   visible: true
   text: |
@@ -1410,9 +1316,6 @@ files:
 - name: src/carsharing/model/CustomerDAO.java
   visible: true
   learner_created: true
-- name: src/carsharing/view/CustomerListView.java
-  visible: true
-  learner_created: true
 - name: src/carsharing/view/CustomerView.java
   visible: true
   learner_created: true
@@ -1422,7 +1325,7 @@ files:
 - name: src/carsharing/view/ListView.java
   visible: true
   learner_created: true
-- name: src/carsharing/model/ListItem.java
+- name: src/carsharing/model/Listable.java
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/projects/140/stages/761/implement#comment

@@ -12,6 +12,7 @@ public class CarDAO {
             "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
             "name VARCHAR(255) UNIQUE NOT NULL," +
             "company_id INT NOT NULL, " +
+            "available BOOL NOT NULL DEFAULT TRUE, " +
             "CONSTRAINT fk_company FOREIGN KEY (company_id) REFERENCES company(id)" +
             ")";
 
@@ -74,5 +75,40 @@ public class CarDAO {
             ex.printStackTrace();
         }
         return list;
+    }
+
+    public List<Car> findAvailableCarsByCompanyId(int companyId) {
+        String sql = "SELECT * FROM car WHERE company_id = " + companyId + " AND available IS TRUE ORDER BY id";
+        List<Car> list = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection(dbFilename);
+             Statement stmt = conn.createStatement()) {
+
+            conn.setAutoCommit(true);
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            while (resultSet.next()) {
+                int carId = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                int carCompanyId = resultSet.getInt("company_id");
+                list.add(new Car(carId, name, carCompanyId));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
+
+    public void setAvailable(Car car, boolean available) {
+        String sql = "UPDATE car SET available = " + available + " WHERE id = " + car.getId();
+        try (Connection conn = DriverManager.getConnection(dbFilename);
+             Statement stmt = conn.createStatement()) {
+
+            conn.setAutoCommit(true);
+            stmt.executeUpdate(sql);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 }
