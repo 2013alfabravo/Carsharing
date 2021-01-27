@@ -54,7 +54,7 @@ public class Controller {
     }
 
     private void addCompany() {
-        view = new NewCompanyView();
+        view = new NewRecordView("company");
         view.display();
         String name = view.getInput();
         companyDAO.addCompany(name);
@@ -62,7 +62,7 @@ public class Controller {
 
     private void displayCompanies() {
         List<Company> companies = companyDAO.findAllCompanies();
-        view = new CompanyListView(companies);
+        view = new ListView<>(companies, "company");
         view.display();
 
         if (companies.isEmpty()) {
@@ -94,7 +94,7 @@ public class Controller {
     }
 
     private void addCar(Company company) {
-        view = new NewCarView();
+        view = new NewRecordView("car");
         view.display();
         String name = view.getInput();
         carDAO.addCar(name, company.getId());
@@ -102,7 +102,7 @@ public class Controller {
 
     private void displayCars(Company company) {
         List<Car> cars = carDAO.findCarsByCompanyId(company.getId());
-        view = new CarListView(cars);
+        view = new ListView<>(cars, "car");
         view.display();
     }
 }

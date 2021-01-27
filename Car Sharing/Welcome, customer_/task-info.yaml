@@ -1085,29 +1085,6 @@ files:
         }
     }
   learner_created: true
-- name: src/carsharing/view/NewCompanyView.java
-  visible: true
-  text: |
-    package carsharing.view;
-
-    import carsharing.Main;
-
-    public class NewCompanyView implements View {
-        private String input;
-
-        @Override
-        public String getInput() {
-            return input;
-        }
-
-        @Override
-        public void display() {
-            System.out.println("\nEnter the company name:");
-            input = Main.scanner.nextLine().strip();
-            System.out.println("The company was created!");
-        }
-    }
-  learner_created: true
 - name: src/carsharing/view/CarListView.java
   visible: true
   text: |
@@ -1427,42 +1404,25 @@ files:
         }
     }
   learner_created: true
-- name: src/carsharing/view/NewCarView.java
-  visible: true
-  text: |
-    package carsharing.view;
-
-    import carsharing.Main;
-
-    public class NewCarView implements View {
-        private String input;
-
-        @Override
-        public String getInput() {
-            return input;
-        }
-
-        @Override
-        public void display() {
-            System.out.println("\nEnter the car name:");
-            input = Main.scanner.nextLine().strip();
-            System.out.println("The car was added!");
-        }
-    }
-  learner_created: true
 - name: src/carsharing/model/Customer.java
   visible: true
   learner_created: true
 - name: src/carsharing/model/CustomerDAO.java
   visible: true
   learner_created: true
-- name: src/carsharing/view/NewCustomerView.java
-  visible: true
-  learner_created: true
 - name: src/carsharing/view/CustomerListView.java
   visible: true
   learner_created: true
 - name: src/carsharing/view/CustomerView.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/view/NewRecordView.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/view/ListView.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/model/ListItem.java
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/projects/140/stages/761/implement#comment

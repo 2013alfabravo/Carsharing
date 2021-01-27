@@ -1,17 +1,20 @@
 package carsharing.view;
 
 import carsharing.Main;
-import carsharing.model.Company;
+import carsharing.model.ListItem;
 
+import java.text.MessageFormat;
 import java.util.List;
 
-public class CompanyListView implements View {
+public class ListView<T extends ListItem> implements View {
     private static final Menu menu = new Menu().addItem("Back", "0");
 
-    private final List<Company> list;
+    private final List<T> list;
+    private final String title;
 
-    public CompanyListView(List<Company> list) {
+    public ListView(List<T> list, String title) {
         this.list = list;
+        this.title = title;
     }
 
     @Override
@@ -34,7 +37,7 @@ public class CompanyListView implements View {
         if (list.isEmpty()) {
             displayEmptyListError();
         } else {
-            System.out.println("\nChoose a company:");
+            System.out.println(MessageFormat.format("\nChoose a {0}:", title));
             for (int i = 0; i < list.size(); i++) {
                 System.out.println(i + 1 + ". " + list.get(i).getName());
             }
@@ -43,7 +46,7 @@ public class CompanyListView implements View {
     }
 
     private void displayEmptyListError() {
-        System.out.println("\nThe company list is empty!");
+        System.out.println(MessageFormat.format("\nThe {0} list is empty!", title));
     }
 
     private void displayInvalidIndexError() {

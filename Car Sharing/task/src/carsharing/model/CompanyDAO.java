@@ -36,6 +36,7 @@ public class CompanyDAO {
         }
     }
 
+    // todo throw exception if something fails
     public void addCompany(String name) {
         String sql = "INSERT INTO company(name) VALUES('" + name + "')";
 
@@ -54,8 +55,9 @@ public class CompanyDAO {
         }
     }
 
+    // todo catch no data exception and throw any other further
     public Company findCompanyByName(String name) {
-        String sql = "SELECT * FROM company WHERE name = " + name;
+        String sql = "SELECT * FROM company WHERE name = '" + name + "'";
         try (Connection conn = DriverManager.getConnection(dbFilename);
              Statement stmt = conn.createStatement()) {
 
@@ -67,7 +69,6 @@ public class CompanyDAO {
             return new Company(companyId, companyName);
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
             return null;
         }
     }
