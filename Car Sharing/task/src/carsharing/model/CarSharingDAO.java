@@ -4,81 +4,77 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// fixme change method parameters to properties instead of objects(??)
 public class CarSharingDAO {
-    private static final String DEFAULT_DB_NAME = "default_car_sharing_db";
-    private static final String PATH = "jdbc:h2:./src/carsharing/db/";
-    private static final String DRIVER = "org.h2.Driver";
-    private static final String SQL_CREATE_CUSTOMER_TABLE = "CREATE TABLE IF NOT EXISTS customer (" +
-            "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
-            "name VARCHAR(255) UNIQUE NOT NULL," +
-            "rented_car_id INTEGER DEFAULT NULL," +
-            "CONSTRAINT fk_car_id FOREIGN KEY (rented_car_id) REFERENCES car(id)" +
-            ")";
-    private static final String SQL_CREATE_COMPANY_TABLE = "CREATE TABLE IF NOT EXISTS company (" +
-            "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
-            "name VARCHAR(255) UNIQUE NOT NULL" +
-            ")";
-    private static final String SQL_CREATE_CAR_TABLE = "CREATE TABLE IF NOT EXISTS car (" +
-            "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
-            "name VARCHAR(255) UNIQUE NOT NULL," +
-            "company_id INT NOT NULL, " +
-            "available BOOL NOT NULL DEFAULT TRUE, " +
-            "CONSTRAINT fk_company FOREIGN KEY (company_id) REFERENCES company(id)" +
-            ")";
+    private static final String CREATE_CUSTOMER_TABLE = "CREATE TABLE IF NOT EXISTS customer (" +
+            "id INTEGER AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, " +
+            "rented_car_id INTEGER DEFAULT NULL, CONSTRAINT fk_car_id FOREIGN KEY (rented_car_id) " +
+            "REFERENCES car(id))";
+    private static final String CREATE_COMPANY_TABLE = "CREATE TABLE IF NOT EXISTS company (" +
+            "id INTEGER AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL)";
+    private static final String CREATE_CAR_TABLE = "CREATE TABLE IF NOT EXISTS car (" +
+            "id INTEGER AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, " +
+            "company_id INT NOT NULL, available BOOL NOT NULL DEFAULT TRUE, " +
+            "CONSTRAINT fk_company FOREIGN KEY (company_id) REFERENCES company(id))";
+    private static final String UPD_CUSTOMER_CAR_ID = "UPDATE customer SET rented_car_id = ? WHERE id = ?";
+    private static final String UPD_CAR_AVAIL = "UPDATE car SET available = FALSE WHERE id = ?";
+    private static final String CREATE_CAR = "INSERT INTO car(name, company_id) VALUES(?, ?)";
+    private static final String ALL_CARS_BY_COMP_ID = "SELECT * FROM car WHERE company_id = ? ORDER BY id";
+    private static final String AVAIL_CARS_BY_COMP_ID = "SELECT * FROM car WHERE company_id = ? " +
+            "AND available IS TRUE ORDER BY id";
+    private static final String CREATE_COMPANY = "INSERT INTO company(name) VALUES(?))";
+    private static final String ALL_COMPANIES = "SELECT * FROM company ORDER BY id";
+    private static final String CREATE_CUSTOMER = "INSERT INTO customer(name) VALUES(?)";
+    private static final String ALL_CUSTOMERS = "SELECT * FROM customer ORDER BY id";
+    private static final String CAR_BY_CUSTOMER_ID = "SELECT b.id, b.name, b.company_id, b.available " +
+            "FROM customer AS a JOIN car AS b ON a.rented_car_id = b.id WHERE a.id = ?";
 
-    private Connection conn;
+    private final DataSource dataSource;
 
-    public CarSharingDAO(String dbFilename) throws ClassNotFoundException {
-        Class.forName(DRIVER);
-        try {
-            conn =  DriverManager.getConnection(PATH + dbFilename);
-            conn.setAutoCommit(true);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public CarSharingDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    public CarSharingDAO() throws ClassNotFoundException {
-        this(DEFAULT_DB_NAME);
-    }
-
+    // todo merge table creation to a single method and do it in a batch
     public void createCarTable() {
-        try (Statement stmt = conn.createStatement()) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(CREATE_CAR_TABLE)) {
 
-            stmt.executeUpdate(SQL_CREATE_CAR_TABLE);
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void addCar(String name, int companyId) {
-        String sql = "INSERT INTO car(" +
-                "id, name, company_id) " +
-                "VALUES(NULL, '" + name + "', " + companyId + ")";
-
-        try (Statement stmt = conn.createStatement()) {
-
-            stmt.executeUpdate(sql);
+            stmt.executeUpdate();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
-    public List<Car> findCarsByCompanyId(int companyId) {
-        String sql = "SELECT * FROM car WHERE company_id = " + companyId + " ORDER BY id";
+    public void createCar(String name, Integer companyId) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(CREATE_CAR)) {
+
+            stmt.setString(1, name);
+            stmt.setObject(2, companyId);
+            stmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public List<Car> findAllCarsByCompanyId(Integer companyId) {
         List<Car> list = new ArrayList<>();
-        try (Statement stmt = conn.createStatement()) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(ALL_CARS_BY_COMP_ID)) {
 
-            ResultSet resultSet = stmt.executeQuery(sql);
+            stmt.setObject(1, companyId);
+            ResultSet resultSet = stmt.executeQuery();
 
             while (resultSet.next()) {
+                // todo move to mapCar method
                 int carId = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 int carCompanyId = resultSet.getInt("company_id");
-                list.add(new Car(carId, name, carCompanyId));
+                Boolean available = (Boolean) resultSet.getObject("available");
+                list.add(new Car(carId, name, carCompanyId, available));
             }
 
         } catch (SQLException ex) {
@@ -87,18 +83,22 @@ public class CarSharingDAO {
         return list;
     }
 
-    public List<Car> findAvailableCarsByCompanyId(int companyId) {
-        String sql = "SELECT * FROM car WHERE company_id = " + companyId + " AND available IS TRUE ORDER BY id";
+    // todo merge into one method with parameter boolean 'all' ==|!= true
+    public List<Car> findAvailableCarsByCompanyId(Integer companyId) {
         List<Car> list = new ArrayList<>();
-        try (Statement stmt = conn.createStatement()) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(AVAIL_CARS_BY_COMP_ID)) {
 
-            ResultSet resultSet = stmt.executeQuery(sql);
+            stmt.setObject(1, companyId);
+            ResultSet resultSet = stmt.executeQuery();
 
             while (resultSet.next()) {
+                // todo move to mapCar method
                 int carId = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 int carCompanyId = resultSet.getInt("company_id");
-                list.add(new Car(carId, name, carCompanyId));
+                Boolean available = (Boolean) resultSet.getObject("available");
+                list.add(new Car(carId, name, carCompanyId, available));
             }
 
         } catch (SQLException ex) {
@@ -107,50 +107,43 @@ public class CarSharingDAO {
         return list;
     }
 
-    public void setUnavailable(Car car) {
-        String sql = "UPDATE car SET available = FALSE WHERE id = " + car.getId();
-        try (Statement stmt = conn.createStatement()) {
-
-            stmt.executeUpdate(sql);
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
+    // todo merge table creation to a single method and do it in a batch
     public void createCompanyTable() {
-        try (Statement stmt = conn.createStatement()) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(CREATE_COMPANY_TABLE)) {
 
-            stmt.executeUpdate(SQL_CREATE_COMPANY_TABLE);
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    // todo throw exception if something fails
-    public void addCompany(String name) {
-        // todo catch unique value violation exception and return success of failure
-        String sql = "INSERT INTO company(name) SELECT '" + name + "' WHERE NOT EXISTS (" +
-                "SELECT name FROM company WHERE name = '" + name + "')";
-
-        try (Statement stmt = conn.createStatement()) {
-
-            stmt.executeUpdate(sql);
+            stmt.executeUpdate();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
+    public void createCompany(String name) {
+        // todo catch unique value violation exception and return success or failure
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(CREATE_COMPANY)) {
+
+            stmt.setString(1, name);
+            stmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    // todo merge findAll into a single generic(?) method that returns a list of Listables
+    //  depending on sql string as the argument
     public List<Company> findAllCompanies() {
-        String sql = "SELECT * FROM company ORDER BY id";
         List<Company> list = new ArrayList<>();
-        try (Statement stmt = conn.createStatement()) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(ALL_COMPANIES)) {
 
-            ResultSet resultSet = stmt.executeQuery(sql);
+            ResultSet resultSet = stmt.executeQuery();
 
             while (resultSet.next()) {
+                // todo do company mapping in a method
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 list.add(new Company(id, name));
@@ -162,22 +155,32 @@ public class CarSharingDAO {
         return list;
     }
 
-    public void createCustomerTable() {
-        try (Statement stmt = conn.createStatement()) {
+    private <T extends Listable> List<T> findAll(Class<T> cl, String sql) {
+        // fixme problems with mapping: unknown entity constructor arguments,
+        //  so choose mapping method according to class and take it as an arg?
+        List<T> list = new ArrayList<>();
+        return list;
+    }
 
-            stmt.executeUpdate(SQL_CREATE_CUSTOMER_TABLE);
+    // fixme combine the table creation methods into a single transaction
+    public void createCustomerTable() {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(CREATE_CUSTOMER_TABLE)) {
+
+            stmt.executeUpdate();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
-    public void addCustomer(String name) {
-        String sql = "INSERT INTO customer(name) VALUES('" + name + "')";
+    // fixme check for unique name violation and return success or failure
+    public void createCustomer(String name) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(CREATE_CUSTOMER)) {
 
-        try (Statement stmt = conn.createStatement()) {
-
-            stmt.executeUpdate(sql);
+            stmt.setString(1, name);
+            stmt.executeUpdate();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -185,13 +188,14 @@ public class CarSharingDAO {
     }
 
     public List<Customer> findAllCustomers() {
-        String sql = "SELECT * FROM customer ORDER BY id";
         List<Customer> list = new ArrayList<>();
-        try (Statement stmt = conn.createStatement()) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(ALL_CUSTOMERS)) {
 
-            ResultSet resultSet = stmt.executeQuery(sql);
+            ResultSet resultSet = stmt.executeQuery();
 
             while (resultSet.next()) {
+                // todo do customer mapping in a method
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 int nullableInt = resultSet.getInt("rented_car_id");
@@ -206,50 +210,58 @@ public class CarSharingDAO {
     }
 
     public void addRentedCar(Customer customer) {
-        // todo rework to add rented car and set the car unavailable as a batch transaction
-        int customerId = customer.getId();
-        int carId = customer.getRentedCarId();
-        String sql = "UPDATE customer SET rented_car_id = " + carId + " WHERE id = " + customerId;
-        System.out.println("updating car: " + sql);
-
-        try (Statement stmt = conn.createStatement()) {
-
-            stmt.executeUpdate(sql);
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        setRentedCar(customer.getId(), customer.getRentedCarId(), true);
     }
 
     public void removeRentedCar(Customer customer) {
-        // todo the same as in addRentedCar, do a batch transaction with customer and car tables
-        String sql = "UPDATE customer SET rented_car_id = NULL WHERE id = " + customer.getId();
+        setRentedCar(customer.getId(), customer.getRentedCarId(), false);
+    }
 
-        try (Statement stmt = conn.createStatement()) {
+    private void setRentedCar(Integer customerId, Integer carId, boolean rented) {
+        try (Connection conn = dataSource.getConnection()) {
+            try (PreparedStatement stmt1 = conn.prepareStatement(UPD_CUSTOMER_CAR_ID);
+                 PreparedStatement stmt2 = conn.prepareStatement(UPD_CAR_AVAIL) ) {
 
-            stmt.executeUpdate(sql);
+                conn.setAutoCommit(false);
 
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+                stmt1.setObject(1, carId);
+                stmt1.setObject(2, customerId);
+                stmt2.setBoolean(1, rented);
+
+                int rows = stmt1.executeUpdate();
+                rows += stmt2.executeUpdate();
+
+                if (rows == 0) {
+                    throw new SQLException("No rows were affected, rolling back the transaction.");
+                }
+
+                conn.commit();
+
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new DAOException(e);
+            }
+        } catch (SQLException | NullPointerException ex) {
+            throw new DAOException("Database connection failure: ", ex);
         }
     }
 
-    public Car findRentedCar(Customer customer) {
-        String sql = "SELECT id, name, company_id FROM car WHERE id = " + customer.getRentedCarId();
+    public Car findRentedCar(Integer customerId) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(CAR_BY_CUSTOMER_ID)) {
 
-        try (Statement pst = conn.createStatement()) {
+            stmt.setObject(1, customerId);
+            ResultSet rs = stmt.executeQuery();
 
-            ResultSet rs = pst.executeQuery(sql);
             if (rs.next()) {
-                int id = rs.getInt("id");
-                System.out.println(id);
+                // todo do car mapping in a method
+                Integer cid = (Integer) rs.getObject("id");
                 String name = rs.getString("name");
-                System.out.println(name);
-                int companyId = rs.getInt("company_id");
-                System.out.println(companyId);
-                return new Car(id, name, companyId);
-            }
+                Integer companyId = (Integer) rs.getObject("company_id");
+                Boolean available = (Boolean) rs.getObject("available");
 
+                return new Car(cid, name, companyId, available);
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

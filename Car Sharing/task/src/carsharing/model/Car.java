@@ -1,14 +1,16 @@
 package carsharing.model;
 
 public class Car implements Listable {
-    private int id;
+    private Integer id;
     private String name;
-    private int companyId;
+    private Integer companyId;
+    private Boolean available;
 
-    public Car(int id, String name, int companyId) {
+    public Car(Integer id, String name, Integer companyId, Boolean available) {
         this.id = id;
         this.name = name;
         this.companyId = companyId;
+        this.available = available;
     }
 
     @Override
@@ -20,11 +22,7 @@ public class Car implements Listable {
         return name;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }

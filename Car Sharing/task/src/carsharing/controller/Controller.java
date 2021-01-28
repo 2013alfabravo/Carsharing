@@ -58,7 +58,7 @@ public class Controller {
         view.display();
         String name = view.getInput();
         // todo add display message to this view and show success message after dao method returns success
-        carsharingDAO.addCustomer(name);
+        carsharingDAO.createCustomer(name);
     }
 
     private void displayCustomers() {
@@ -103,13 +103,15 @@ public class Controller {
             System.out.println("You didn't rent a car!");
             return;
         }
-        System.out.println("rented car id = " + customer.getRentedCarId());
-        Car car = carsharingDAO.findRentedCar(customer);
+        Car car = carsharingDAO.findRentedCar(customer.getId());
         System.out.println(MessageFormat.format("You rented {0}", car.getName()));
     }
 
+    // fixme change to view
     private void returnCar(Customer customer) {
-        System.out.println("returning the car");
+        customer.setRentedCar(null);
+        carsharingDAO.removeRentedCar(customer);
+        System.out.println("car returned");
     }
 
     private void rentCar(Customer customer) {
@@ -138,19 +140,15 @@ public class Controller {
         }
 
         Car car = cars.get(index);
-        System.out.println(MessageFormat.format("renting car: name={0}, id={1}", car.getName(), car.getId()));
         customer.setRentedCar(car.getId());
-        System.out.println(MessageFormat.format(
-                "customer id={0}rented car with id={1}", customer.getId(), customer.getRentedCarId()));
         carsharingDAO.addRentedCar(customer);
-        carsharingDAO.setUnavailable(car);
     }
 
     private void addCompany() {
         view = new NewRecordView("company");
         view.display();
         String name = view.getInput();
-        carsharingDAO.addCompany(name);
+        carsharingDAO.createCompany(name);
     }
 
     private void displayCompanies() {
@@ -190,11 +188,11 @@ public class Controller {
         view = new NewRecordView("car");
         view.display();
         String name = view.getInput();
-        carsharingDAO.addCar(name, company.getId());
+        carsharingDAO.createCar(name, company.getId());
     }
 
     private void displayCars(Company company) {
-        List<Car> cars = carsharingDAO.findCarsByCompanyId(company.getId());
+        List<Car> cars = carsharingDAO.findAllCarsByCompanyId(company.getId());
         // fixme change title to contain the entire list title, i.e. choose a ... or empty and don't print if empty
         view = new ListView<>(cars, "car");
         view.display();

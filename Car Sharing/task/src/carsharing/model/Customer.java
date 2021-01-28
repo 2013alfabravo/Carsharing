@@ -1,11 +1,11 @@
 package carsharing.model;
 
 public class Customer implements Listable {
-    private int id;
+    private Integer id;
     private String name;
     private Integer rentedCarId;
 
-    public Customer(int id, String name, Integer rentedCarId) {
+    public Customer(Integer id, String name, Integer rentedCarId) {
         this.id = id;
         this.name = name;
         this.rentedCarId = rentedCarId;
@@ -15,7 +15,7 @@ public class Customer implements Listable {
         return name;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -23,11 +23,7 @@ public class Customer implements Listable {
         return rentedCarId;
     }
 
-    public void setRentedCar(int rentedCarId) {
+    public void setRentedCar(Integer rentedCarId) {
         this.rentedCarId = rentedCarId;
-    }
-
-    public int getRentedCar() {
-        return rentedCarId;
     }
 }

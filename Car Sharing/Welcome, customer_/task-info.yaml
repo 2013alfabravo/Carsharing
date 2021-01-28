@@ -1029,105 +1029,6 @@ files:
         void display();
     }
   learner_created: true
-- name: src/carsharing/model/CompanyDAO.java
-  visible: true
-  text: |
-    package carsharing.model;
-
-    import java.sql.*;
-    import java.util.ArrayList;
-    import java.util.List;
-
-    public class CompanyDAO {
-        private static final String DEFAULT_DB_NAME = "default_car_sharing_db";
-        private static final String PATH = "jdbc:h2:./src/carsharing/db/";
-        private static final String DRIVER = "org.h2.Driver";
-        private static final String SQL_CREATE_TABLE = "CREATE TABLE company (" +
-                "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
-                "name VARCHAR(255) UNIQUE NOT NULL" +
-                ")";
-
-        private final String dbFilename;
-
-        public CompanyDAO(String dbFilename) throws ClassNotFoundException {
-            this.dbFilename = PATH + dbFilename;
-            Class.forName(DRIVER);
-        }
-
-        public CompanyDAO() throws ClassNotFoundException {
-           this(DEFAULT_DB_NAME);
-        }
-
-        public void createTable() {
-            try (Connection conn = DriverManager.getConnection(dbFilename);
-                 Statement stmt = conn.createStatement()) {
-
-                conn.setAutoCommit(true);
-                stmt.executeUpdate(SQL_CREATE_TABLE);
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        public void addCompany(String name) {
-            String sql = "INSERT INTO company(id, name) VALUES(NULL, '" + name + "')";
-
-            if (findCompanyByName(name) != null) {
-                return;
-            }
-
-            try (Connection conn = DriverManager.getConnection(dbFilename);
-                 Statement stmt = conn.createStatement()) {
-
-                conn.setAutoCommit(true);
-                stmt.executeUpdate(sql);
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        public Company findCompanyByName(String name) {
-            String sql = "SELECT * FROM company WHERE name = " + name;
-            try (Connection conn = DriverManager.getConnection(dbFilename);
-                 Statement stmt = conn.createStatement()) {
-
-                conn.setAutoCommit(true);
-                ResultSet resultSet = stmt.executeQuery(sql);
-
-                int companyId = resultSet.getInt("id");
-                String companyName = resultSet.getString("name");
-                return new Company(companyId, companyName);
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                return null;
-            }
-        }
-
-        public List<Company> findAllCompanies() {
-            String sql = "SELECT * FROM company ORDER BY id";
-            List<Company> list = new ArrayList<>();
-            try (Connection conn = DriverManager.getConnection(dbFilename);
-                 Statement stmt = conn.createStatement()) {
-
-                conn.setAutoCommit(true);
-                ResultSet resultSet = stmt.executeQuery(sql);
-
-                while (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    String name = resultSet.getString("name");
-                    list.add(new Company(id, name));
-                }
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-            return list;
-        }
-    }
-  learner_created: true
 - name: src/carsharing/view/MainMenuView.java
   visible: true
   text: |
@@ -1202,88 +1103,6 @@ files:
         }
     }
   learner_created: true
-- name: src/carsharing/model/CarDAO.java
-  visible: true
-  text: |
-    package carsharing.model;
-
-    import java.sql.*;
-    import java.util.ArrayList;
-    import java.util.List;
-
-    public class CarDAO {
-        private static final String DEFAULT_DB_NAME = "default_car_sharing_db";
-        private static final String PATH = "jdbc:h2:./src/carsharing/db/";
-        private static final String DRIVER = "org.h2.Driver";
-        private static final String SQL_CREATE_TABLE = "CREATE TABLE car (" +
-                "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
-                "name VARCHAR(255) UNIQUE NOT NULL," +
-                "company_id INT NOT NULL, " +
-                "CONSTRAINT fk_company FOREIGN KEY (company_id) REFERENCES company(id)" +
-                ")";
-
-        private final String dbFilename;
-
-        public CarDAO(String dbFilename) throws ClassNotFoundException {
-            this.dbFilename = PATH + dbFilename;
-            Class.forName(DRIVER);
-        }
-
-        public CarDAO() throws ClassNotFoundException {
-            this(DEFAULT_DB_NAME);
-        }
-
-        public void createTable() {
-            try (Connection conn = DriverManager.getConnection(dbFilename);
-                 Statement stmt = conn.createStatement()) {
-
-                conn.setAutoCommit(true);
-                stmt.executeUpdate(SQL_CREATE_TABLE);
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        public void addCar(String name, int companyId) {
-            String sql = "INSERT INTO car(" +
-                    "id, name, company_id) " +
-                    "VALUES(NULL, '" + name + "', " + companyId + ")";
-
-            try (Connection conn = DriverManager.getConnection(dbFilename);
-                 Statement stmt = conn.createStatement()) {
-
-                conn.setAutoCommit(true);
-                stmt.executeUpdate(sql);
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        public List<Car> getCarsByCompanyId(int companyId) {
-            String sql = "SELECT * FROM car WHERE company_id = " + companyId + " ORDER BY id";
-            List<Car> list = new ArrayList<>();
-            try (Connection conn = DriverManager.getConnection(dbFilename);
-                 Statement stmt = conn.createStatement()) {
-
-                conn.setAutoCommit(true);
-                ResultSet resultSet = stmt.executeQuery(sql);
-
-                while (resultSet.next()) {
-                    int carId = resultSet.getInt("id");
-                    String name = resultSet.getString("name");
-                    int carCompanyId = resultSet.getInt("company_id");
-                    list.add(new Car(carId, name, carCompanyId));
-                }
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-            return list;
-        }
-    }
-  learner_created: true
 - name: src/carsharing/view/Menu.java
   visible: true
   text: |
@@ -1326,6 +1145,12 @@ files:
   visible: true
   learner_created: true
 - name: src/carsharing/model/CarSharingDAO.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/model/DataSource.java
+  visible: true
+  learner_created: true
+- name: src/carsharing/model/DAOException.java
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/projects/140/stages/761/implement#comment
