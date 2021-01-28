@@ -1,30 +1,23 @@
 package carsharing;
 
 import carsharing.controller.Controller;
-import carsharing.model.CarDAO;
-import carsharing.model.CompanyDAO;
-import carsharing.model.CustomerDAO;
+import carsharing.model.CarSharingDAO;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
     public static final Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) throws ClassNotFoundException {
-        CompanyDAO companyDAO;
-        CarDAO carDAO;
-        CustomerDAO customerDAO;
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+        CarSharingDAO carsharingDAO;
         if (args.length == 2 && "-databaseFileName".equals(args[0])) {
-             companyDAO = new CompanyDAO(args[1]);
-             carDAO = new CarDAO(args[1]);
-             customerDAO = new CustomerDAO(args[1]);
+             carsharingDAO = new CarSharingDAO(args[1]);
         } else {
-            companyDAO = new CompanyDAO();
-            carDAO = new CarDAO();
-            customerDAO = new CustomerDAO();
+            carsharingDAO = new CarSharingDAO();
         }
 
-        Controller controller = new Controller(companyDAO, carDAO, customerDAO);
+        Controller controller = new Controller(carsharingDAO);
         controller.run();
     }
 }

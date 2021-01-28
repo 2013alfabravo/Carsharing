@@ -8,7 +8,7 @@ public class CarDAO {
     private static final String DEFAULT_DB_NAME = "default_car_sharing_db";
     private static final String PATH = "jdbc:h2:./src/carsharing/db/";
     private static final String DRIVER = "org.h2.Driver";
-    private static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS car (" +
+    private static final String SQL_CREATE_CAR_TABLE = "CREATE TABLE IF NOT EXISTS car (" +
             "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
             "name VARCHAR(255) UNIQUE NOT NULL," +
             "company_id INT NOT NULL, " +
@@ -27,12 +27,12 @@ public class CarDAO {
         this(DEFAULT_DB_NAME);
     }
 
-    public void createTable() {
+    public void createCarTable() {
         try (Connection conn = DriverManager.getConnection(dbFilename);
              Statement stmt = conn.createStatement()) {
 
             conn.setAutoCommit(true);
-            stmt.executeUpdate(SQL_CREATE_TABLE);
+            stmt.executeUpdate(SQL_CREATE_CAR_TABLE);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -99,8 +99,8 @@ public class CarDAO {
         return list;
     }
 
-    public void setAvailable(Car car, boolean available) {
-        String sql = "UPDATE car SET available = " + available + " WHERE id = " + car.getId();
+    public void setUnavailable(Car car) {
+        String sql = "UPDATE car SET available = FALSE WHERE id = " + car.getId();
         try (Connection conn = DriverManager.getConnection(dbFilename);
              Statement stmt = conn.createStatement()) {
 

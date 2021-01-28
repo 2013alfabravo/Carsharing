@@ -8,7 +8,7 @@ public class CompanyDAO {
     private static final String DEFAULT_DB_NAME = "default_car_sharing_db";
     private static final String PATH = "jdbc:h2:./src/carsharing/db/";
     private static final String DRIVER = "org.h2.Driver";
-    private static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS company (" +
+    private static final String SQL_CREATE_COMPANY_TABLE = "CREATE TABLE IF NOT EXISTS company (" +
             "id INTEGER AUTO_INCREMENT PRIMARY KEY, " +
             "name VARCHAR(255) UNIQUE NOT NULL" +
             ")";
@@ -24,12 +24,12 @@ public class CompanyDAO {
        this(DEFAULT_DB_NAME);
     }
 
-    public void createTable() {
+    public void createCompanyTable() {
         try (Connection conn = DriverManager.getConnection(dbFilename);
              Statement stmt = conn.createStatement()) {
 
             conn.setAutoCommit(true);
-            stmt.executeUpdate(SQL_CREATE_TABLE);
+            stmt.executeUpdate(SQL_CREATE_COMPANY_TABLE);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -38,11 +38,13 @@ public class CompanyDAO {
 
     // todo throw exception if something fails
     public void addCompany(String name) {
-        String sql = "INSERT INTO company(name) VALUES('" + name + "')";
+        // todo catch unique value violation exception and return success of failure
+        String sql = "INSERT INTO company(name) SELECT '" + name + "' WHERE NOT EXISTS (" +
+                "SELECT name FROM company WHERE name = '" + name + "')";
 
-        if (findCompanyByName(name) != null) {
-            return;
-        }
+//        if (findCompanyByName(name) != null) {
+//            return;
+//        }
 
         try (Connection conn = DriverManager.getConnection(dbFilename);
              Statement stmt = conn.createStatement()) {
@@ -55,7 +57,7 @@ public class CompanyDAO {
         }
     }
 
-    // todo catch no data exception and throw any other further
+    // todo return either Error or Success with payload
     public Company findCompanyByName(String name) {
         String sql = "SELECT * FROM company WHERE name = '" + name + "'";
         try (Connection conn = DriverManager.getConnection(dbFilename);
