@@ -3,10 +3,12 @@ package carsharing.controller;
 import carsharing.model.*;
 import carsharing.view.*;
 
-import java.text.MessageFormat;
 import java.util.List;
 
+// todo combine various entity views into a single menu view with Menu obj as an arg + add menu factory and menu enum
 public class Controller {
+    private static final String FAIL = "Operation failed";
+    
     private View view;
     private final CarSharingDAO carsharingDAO;
 
@@ -18,18 +20,18 @@ public class Controller {
         carsharingDAO.createCompanyTable();
         carsharingDAO.createCarTable();
         carsharingDAO.createCustomerTable();
-        displayMainMenu();
+        showMainMenu();
     }
 
-    private void displayMainMenu() {
+    private void showMainMenu() {
         while (true) {
             view = new MainMenuView();
             view.display();
             String input = view.getInput();
             if ("1".equals(input)) {
-                displayManagerActions();
+                showManagerMenu();
             } else if ("2".equals(input)) {
-                displayCustomers();
+                showCustomerList();
             } else if ("3".equals(input)) {
                 addCustomer();
             } else if ("0".equals(input)) {
@@ -38,13 +40,13 @@ public class Controller {
         }
     }
 
-    private void displayManagerActions() {
+    private void showManagerMenu() {
         while (true) {
             view = new ManagerActionsView();
             view.display();
             String input = view.getInput();
             if ("1".equals(input)) {
-                displayCompanies();
+                showCompanyList();
             } else if ("2".equals(input)) {
                 addCompany();
             } else if ("0".equals(input)) {
@@ -57,12 +59,24 @@ public class Controller {
         view = new NewRecordView("customer");
         view.display();
         String name = view.getInput();
-        // todo add display message to this view and show success message after dao method returns success
-        carsharingDAO.createCustomer(name);
+        try {
+            carsharingDAO.createCustomer(name);
+            view.showMessage("The customer was added!");
+        } catch (DAOException e) {
+            view.showMessage(FAIL);
+        }
     }
 
-    private void displayCustomers() {
-        List<Customer> customers = carsharingDAO.findAllCustomers();
+    private void showCustomerList() {
+        List<Customer> customers;
+        try {
+            customers = carsharingDAO.findAllCustomers();
+        } catch (DAOException e) {
+            view.showMessage(FAIL);
+            return;
+        }
+
+        // fixme extract showing a list and getting an index with input validation
         view = new ListView<>(customers, "customer");
         view.display();
 
@@ -76,10 +90,10 @@ public class Controller {
         }
 
         Customer customer = customers.get(index);
-        showCustomer(customer);
+        showCustomerMenu(customer);
     }
 
-    private void showCustomer(Customer customer) {
+    private void showCustomerMenu(Customer customer) {
         while (true) {
             view = new CustomerView(customer);
             view.display();
@@ -98,24 +112,45 @@ public class Controller {
     }
 
     private void showRentedCar(Customer customer) {
-        // fixme change to view
         if (customer.getRentedCarId() == null) {
-            System.out.println("You didn't rent a car!");
+            view.showMessage("You didn't rent a car!");
             return;
         }
-        Car car = carsharingDAO.findRentedCar(customer.getId());
-        System.out.println(MessageFormat.format("You rented {0}", car.getName()));
+
+        try {
+            Car car = carsharingDAO.findRentedCar(customer.getId());
+            Company company = carsharingDAO.findCompanyById(car.getCompanyId());
+            view.showMessage("Your rented car:");
+            view.showMessage(car.getName());
+            view.showMessage("Company:");
+            view.showMessage(company.getName());
+        } catch (DAOException e) {
+            view.showMessage(FAIL);
+        }
     }
 
-    // fixme change to view
     private void returnCar(Customer customer) {
-        carsharingDAO.removeRentedCar(customer.getId(), customer.getRentedCarId());
-        // todo try catch to see if the transaction is successful
-        customer.setRentedCar(null);
-        System.out.println("car returned");
+        if (customer.getRentedCarId() == null) {
+            view.showMessage("You didn't rent a car!");
+            return;
+        }
+
+        try {
+            carsharingDAO.removeRentedCar(customer.getId(), customer.getRentedCarId());
+            customer.setRentedCar(null);
+            view.showMessage("You've returned a rented car!");
+        } catch (DAOException e) {
+            view.showMessage(FAIL);
+        }
     }
 
     private void rentCar(Customer customer) {
+        if (customer.getRentedCarId() != null) {
+            view.showMessage("You've already rented a car!");
+            return;
+        }
+
+        // fixme extract showing a list and getting an index with input validation
         List<Company> companies = carsharingDAO.findAllCompanies();
         view = new ListView<>(companies, "company");
         view.display();
@@ -140,20 +175,38 @@ public class Controller {
             return;
         }
 
-        Car car = cars.get(index);
-        customer.setRentedCar(car.getId());
-        carsharingDAO.addRentedCar(customer.getId(), customer.getRentedCarId());
+        try {
+            Car car = cars.get(index);
+            customer.setRentedCar(car.getId());
+            carsharingDAO.addRentedCar(customer.getId(), customer.getRentedCarId());
+            view.showMessage(String.format("You rented '%s'", car.getName()));
+        } catch (DAOException e) {
+            view.showMessage(FAIL);
+        }
     }
 
     private void addCompany() {
         view = new NewRecordView("company");
         view.display();
         String name = view.getInput();
-        carsharingDAO.createCompany(name);
+        try {
+            carsharingDAO.createCompany(name);
+            view.showMessage("The new company was added!");
+        } catch (DAOException e) {
+            view.showMessage(FAIL);
+        }
     }
 
-    private void displayCompanies() {
-        List<Company> companies = carsharingDAO.findAllCompanies();
+    private void showCompanyList() {
+        List<Company> companies;
+
+        try {
+             companies = carsharingDAO.findAllCompanies();
+        } catch (DAOException e) {
+            view.showMessage(FAIL);
+            return;
+        }
+
         view = new ListView<>(companies, "company");
         view.display();
 
@@ -167,16 +220,16 @@ public class Controller {
         }
 
         Company company = companies.get(index);
-        showCompany(company);
+        showCompanyMenu(company);
     }
 
-    private void showCompany(Company company) {
+    private void showCompanyMenu(Company company) {
         while (true) {
             view = new CompanyView(company);
             view.display();
             String input = view.getInput();
             if ("1".equals(input)) {
-                displayCars(company);
+                showCarList(company);
             } else if ("2".equals(input)) {
                 addCar(company);
             } else if ("0".equals(input)) {
@@ -189,13 +242,17 @@ public class Controller {
         view = new NewRecordView("car");
         view.display();
         String name = view.getInput();
-        carsharingDAO.createCar(name, company.getId());
+        try {
+            carsharingDAO.createCar(name, company.getId());
+            view.showMessage("The new car was added!");
+        } catch (DAOException e) {
+            view.showMessage(FAIL);
+        }
     }
 
-    private void displayCars(Company company) {
+    private void showCarList(Company company) {
         List<Car> cars = carsharingDAO.findAllCarsByCompanyId(company.getId());
-        // fixme change title to contain the entire list title, i.e. choose a ... or empty and don't print if empty
-        view = new ListView<>(cars, "car");
+        view = new ListView<>(cars, "car", false);
         view.display();
     }
 }

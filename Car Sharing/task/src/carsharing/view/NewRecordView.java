@@ -19,8 +19,8 @@ public class NewRecordView implements View {
 
     @Override
     public void display() {
-        System.out.println(MessageFormat.format("\nEnter the {0} name:", title));
+        emptyLine();
+        showMessage(String.format("Enter the %s name:", title));
         input = Main.scanner.nextLine().strip();
-        System.out.println(MessageFormat.format("The {0} was created!", title));
     }
 }

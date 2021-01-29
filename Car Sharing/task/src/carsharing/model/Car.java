@@ -25,4 +25,8 @@ public class Car implements Listable {
     public Integer getId() {
         return id;
     }
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
 }

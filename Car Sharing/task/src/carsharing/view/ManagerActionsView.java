@@ -14,18 +14,14 @@ public class ManagerActionsView implements View {
             if (menu.isValidKey(input)) {
                 return input;
             } else {
-                displayErrorMessage();
+                showMessage("Please enter a valid number.");
             }
         }
     }
 
     @Override
     public void display() {
-        System.out.println();
+        emptyLine();
         menu.show();
-    }
-
-    private void displayErrorMessage() {
-        System.out.println("Please enter a valid number.");
     }
 }

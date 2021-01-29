@@ -23,7 +23,7 @@ public class CustomerView implements View {
             if (menu.isValidKey(input)) {
                 return input;
             } else {
-                displayErrorMessage();
+                showMessage("Please enter a valid number.");
             }
         }
     }
@@ -32,9 +32,5 @@ public class CustomerView implements View {
     public void display() {
         System.out.println();
         menu.show();
-    }
-
-    private void displayErrorMessage() {
-        System.out.println("Please enter a valid number.");
     }
 }

@@ -22,18 +22,16 @@ public class CompanyView implements View {
             if (menu.isValidKey(input)) {
                 return input;
             } else {
-                displayErrorMessage();
+                showMessage("Please enter a valid number.");
             }
         }
     }
 
     @Override
     public void display() {
-        System.out.println("\n'" + company.getName() + "' company");
+        emptyLine();
+        showMessage(String.format("'%s' company", company.getName()));
         menu.show();
     }
 
-    private void displayErrorMessage() {
-        System.out.println("Please enter a valid number.");
-    }
 }

@@ -3,19 +3,23 @@ package carsharing.view;
 import carsharing.Main;
 import carsharing.model.Listable;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 public class ListView<T extends Listable> implements View {
-    // fixme add parameter boolean showMenu
     private static final Menu menu = new Menu().addItem("Back", "0");
 
     private final List<T> list;
     private final String title;
+    private final boolean showMenu;
 
-    public ListView(List<T> list, String title) {
+    public ListView(List<T> list, String title, boolean showMenu) {
         this.list = list;
         this.title = title;
+        this.showMenu = showMenu;
+    }
+
+    public ListView(List<T> list, String title) {
+        this(list, title, true);
     }
 
     @Override
@@ -37,20 +41,27 @@ public class ListView<T extends Listable> implements View {
     public void display() {
         if (list.isEmpty()) {
             displayEmptyListError();
-        } else {
-            System.out.println(MessageFormat.format("\nChoose a {0}:", title));
-            for (int i = 0; i < list.size(); i++) {
-                System.out.println(i + 1 + ". " + list.get(i).getName());
-            }
+            return;
+        }
+
+        emptyLine();
+        showMessage(String.format("Choose a %s:", title));
+
+        for (int i = 0; i < list.size(); i++) {
+            showMessage(i + 1 + ". " + list.get(i).getName());
+        }
+
+        if (showMenu) {
             menu.show();
         }
     }
 
     private void displayEmptyListError() {
-        System.out.println(MessageFormat.format("\nThe {0} list is empty!", title));
+        emptyLine();
+        showMessage(String.format("The %s list is empty!", title));
     }
 
     private void displayInvalidIndexError() {
-        System.out.println("Enter a valid index.");
+        showMessage("Enter a valid index.");
     }
 }

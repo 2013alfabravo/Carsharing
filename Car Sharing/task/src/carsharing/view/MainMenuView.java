@@ -16,14 +16,14 @@ public class MainMenuView implements View {
             if (menu.isValidKey(actionKey)) {
                 return actionKey;
             } else {
-                System.out.println("Please enter a valid number.");
+                showMessage("Please enter a valid number.");
             }
         }
     }
 
     @Override
     public void display() {
-        System.out.println();
+        emptyLine();
         menu.show();
     }
 }
