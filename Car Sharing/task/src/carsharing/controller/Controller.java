@@ -109,8 +109,9 @@ public class Controller {
 
     // fixme change to view
     private void returnCar(Customer customer) {
+        carsharingDAO.removeRentedCar(customer.getId(), customer.getRentedCarId());
+        // todo try catch to see if the transaction is successful
         customer.setRentedCar(null);
-        carsharingDAO.removeRentedCar(customer);
         System.out.println("car returned");
     }
 
@@ -141,7 +142,7 @@ public class Controller {
 
         Car car = cars.get(index);
         customer.setRentedCar(car.getId());
-        carsharingDAO.addRentedCar(customer);
+        carsharingDAO.addRentedCar(customer.getId(), customer.getRentedCarId());
     }
 
     private void addCompany() {

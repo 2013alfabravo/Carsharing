@@ -4,13 +4,13 @@ public class Car implements Listable {
     private Integer id;
     private String name;
     private Integer companyId;
-    private Boolean available;
+    private Integer customerId;
 
-    public Car(Integer id, String name, Integer companyId, Boolean available) {
+    public Car(Integer id, String name, Integer companyId, Integer customerId) {
         this.id = id;
         this.name = name;
         this.companyId = companyId;
-        this.available = available;
+        this.customerId = customerId;
     }
 
     @Override
