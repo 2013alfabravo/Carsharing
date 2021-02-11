@@ -1,4 +1,3 @@
-import carsharing.Main;
 import org.hyperskill.hstest.dynamic.input.DynamicTestingMethod;
 import org.hyperskill.hstest.stage.StageTest;
 import org.hyperskill.hstest.testcase.CheckResult;
@@ -13,7 +12,7 @@ public class CarSharingTest extends StageTest<Void> {
 
     @DynamicTestingMethod
     public CheckResult test1_testMenu() {
-        TestedProgram program = new TestedProgram(Main.class);
+        TestedProgram program = new TestedProgram();
         String output = program.start("-databaseFileName", "carsharing");
 
         if (!output.contains("1. Log in as a manager")) {
@@ -54,7 +53,7 @@ public class CarSharingTest extends StageTest<Void> {
     @DynamicTestingMethod
     public CheckResult test2_ifDatabaseExist() {
 
-        TestedProgram program = new TestedProgram(Main.class);
+        TestedProgram program = new TestedProgram();
         program.start("-databaseFileName", "carsharing");
         program.execute("0");
 
@@ -108,7 +107,7 @@ public class CarSharingTest extends StageTest<Void> {
     @DynamicTestingMethod
     public CheckResult test6_testAddCompany() {
 
-        TestedProgram program = new TestedProgram(Main.class);
+        TestedProgram program = new TestedProgram();
         program.start("-databaseFileName", "carsharing");
 
         db.clearCustomerTable();
@@ -178,7 +177,7 @@ public class CarSharingTest extends StageTest<Void> {
     @DynamicTestingMethod
     public CheckResult test7_testAddCar() {
 
-        TestedProgram program = new TestedProgram(Main.class);
+        TestedProgram program = new TestedProgram();
         program.start("-databaseFileName", "carsharing");
         String output;
 
@@ -303,7 +302,7 @@ public class CarSharingTest extends StageTest<Void> {
     @DynamicTestingMethod
     public CheckResult test8_testAddCustomer() {
 
-        TestedProgram program = new TestedProgram(Main.class);
+        TestedProgram program = new TestedProgram();
         String output = program.start("-databaseFileName", "carsharing");
 
         db.clearCustomerTable();
@@ -392,7 +391,7 @@ public class CarSharingTest extends StageTest<Void> {
     @DynamicTestingMethod
     public CheckResult test9_testRentCar() {
 
-        TestedProgram program = new TestedProgram(Main.class);
+        TestedProgram program = new TestedProgram();
         String output;
         program.start("-databaseFileName", "carsharing");
 

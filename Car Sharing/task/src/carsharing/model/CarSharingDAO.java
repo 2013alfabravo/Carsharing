@@ -80,6 +80,24 @@ public class CarSharingDAO {
         }
     }
 
+    public void dropTables() {
+        try (Connection conn = dataSource.getConnection()) {
+
+            try {
+                Statement statement = conn.createStatement();
+                statement.executeUpdate("DROP TABLE IF EXISTS customer");
+                statement.executeUpdate("DROP TABLE IF EXISTS car");
+                statement.executeUpdate("DROP TABLE IF EXISTS company");
+            } catch (SQLException ex) {
+                LOGGER.info(ex.getSQLState());
+            }
+
+        } catch (SQLException e) {
+            LOGGER.info(e.getSQLState());
+            throw new DAOException(SQL_ERROR);
+        }
+    }
+
     public void createCar(String name, Integer companyId) {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(CREATE_CAR)) {

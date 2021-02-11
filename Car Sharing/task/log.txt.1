@@ -1,24 +1,32 @@
-Jan 29, 2021 10:39:04 PM carsharing.model.CarSharingDAO <init>
+Jan 29, 2021 11:02:37 PM carsharing.model.CarSharingDAO <init>
 INFO: Initiated.
-Jan 29, 2021 10:39:04 PM carsharing.model.CarSharingDAO createTable
-INFO: prep3: CREATE TABLE IF NOT EXISTS company (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL,customer_id INT DEFAULT NULL)
-Jan 29, 2021 10:39:04 PM carsharing.model.CarSharingDAO createTable
-INFO: prep4: CREATE TABLE IF NOT EXISTS car (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, company_id INT NOT NULL, customer_id INT DEFAULT NULL, CONSTRAINT fk_company FOREIGN KEY (company_id) REFERENCES company(id))
-Jan 29, 2021 10:39:04 PM carsharing.model.CarSharingDAO createTable
-INFO: prep5: CREATE TABLE IF NOT EXISTS customer (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, rented_car_id INT DEFAULT NULL, CONSTRAINT fk_car_id FOREIGN KEY (rented_car_id) REFERENCES car(id))
-Jan 29, 2021 10:40:50 PM carsharing.model.CarSharingDAO <init>
-INFO: Initiated.
-Jan 29, 2021 10:40:50 PM carsharing.model.CarSharingDAO createTable
-INFO: prep3: CREATE TABLE IF NOT EXISTS company (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, customer_id INT DEFAULT NULL)
-Jan 29, 2021 10:40:50 PM carsharing.model.CarSharingDAO createTable
-INFO: prep4: CREATE TABLE IF NOT EXISTS car (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, company_id INT NOT NULL, customer_id INT DEFAULT NULL, CONSTRAINT fk_company FOREIGN KEY (company_id) REFERENCES company(id))
-Jan 29, 2021 10:40:51 PM carsharing.model.CarSharingDAO createTable
-INFO: prep5: CREATE TABLE IF NOT EXISTS customer (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, rented_car_id INT DEFAULT NULL, CONSTRAINT fk_car_id FOREIGN KEY (rented_car_id) REFERENCES car(id))
-Jan 29, 2021 10:41:47 PM carsharing.model.CarSharingDAO <init>
-INFO: Initiated.
-Jan 29, 2021 10:41:47 PM carsharing.model.CarSharingDAO createTable
+Jan 29, 2021 11:02:38 PM carsharing.model.CarSharingDAO createTable
 INFO: prep3: CREATE TABLE IF NOT EXISTS company (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL)
-Jan 29, 2021 10:41:47 PM carsharing.model.CarSharingDAO createTable
+Jan 29, 2021 11:02:38 PM carsharing.model.CarSharingDAO createTable
 INFO: prep4: CREATE TABLE IF NOT EXISTS car (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, company_id INT NOT NULL, customer_id INT DEFAULT NULL, CONSTRAINT fk_company FOREIGN KEY (company_id) REFERENCES company(id))
-Jan 29, 2021 10:41:47 PM carsharing.model.CarSharingDAO createTable
+Jan 29, 2021 11:02:38 PM carsharing.model.CarSharingDAO createTable
 INFO: prep5: CREATE TABLE IF NOT EXISTS customer (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, rented_car_id INT DEFAULT NULL, CONSTRAINT fk_car_id FOREIGN KEY (rented_car_id) REFERENCES car(id))
+Feb 10, 2021 9:23:33 PM carsharing.model.CarSharingDAO <init>
+INFO: Initiated.
+Feb 10, 2021 9:23:33 PM carsharing.model.CarSharingDAO createTable
+INFO: prep3: CREATE TABLE IF NOT EXISTS company (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL)
+Feb 10, 2021 9:23:33 PM carsharing.model.CarSharingDAO createTable
+INFO: prep4: CREATE TABLE IF NOT EXISTS car (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, company_id INT NOT NULL, customer_id INT DEFAULT NULL, CONSTRAINT fk_company FOREIGN KEY (company_id) REFERENCES company(id))
+Feb 10, 2021 9:23:33 PM carsharing.model.CarSharingDAO createTable
+INFO: prep5: CREATE TABLE IF NOT EXISTS customer (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, rented_car_id INT DEFAULT NULL, CONSTRAINT fk_car_id FOREIGN KEY (rented_car_id) REFERENCES car(id))
+Feb 10, 2021 9:25:04 PM carsharing.model.CarSharingDAO <init>
+INFO: Initiated.
+Feb 10, 2021 9:25:04 PM carsharing.model.CarSharingDAO createTable
+INFO: prep3: CREATE TABLE IF NOT EXISTS company (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, customer_id INT)
+Feb 10, 2021 9:25:04 PM carsharing.model.CarSharingDAO createTable
+INFO: prep4: CREATE TABLE IF NOT EXISTS car (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, company_id INT NOT NULL, customer_id INT DEFAULT NULL, CONSTRAINT fk_company FOREIGN KEY (company_id) REFERENCES company(id))
+Feb 10, 2021 9:25:04 PM carsharing.model.CarSharingDAO createTable
+INFO: prep5: CREATE TABLE IF NOT EXISTS customer (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, rented_car_id INT DEFAULT NULL, CONSTRAINT fk_car_id FOREIGN KEY (rented_car_id) REFERENCES car(id))
+Feb 10, 2021 9:26:07 PM carsharing.model.CarSharingDAO <init>
+INFO: Initiated.
+Feb 10, 2021 9:26:07 PM carsharing.model.CarSharingDAO createTable
+INFO: prep3: CREATE TABLE IF NOT EXISTS company (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL)
+Feb 10, 2021 9:26:07 PM carsharing.model.CarSharingDAO createTable
+INFO: prep4: CREATE TABLE IF NOT EXISTS car (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, company_id INT NOT NULL, customer_id INT DEFAULT NULL, CONSTRAINT fk_company FOREIGN KEY (company_id) REFERENCES company(id))
+Feb 10, 2021 9:26:07 PM carsharing.model.CarSharingDAO createTable
+INFO: prep5: CREATE TABLE IF NOT EXISTS customer (customer_id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, rented_car_id INT DEFAULT NULL, CONSTRAINT fk_car_id FOREIGN KEY (rented_car_id) REFERENCES car(id))

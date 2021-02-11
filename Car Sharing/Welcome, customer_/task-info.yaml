@@ -321,7 +321,6 @@ files:
 - name: test/CarSharingTest.java
   visible: false
   text: |
-    import carsharing.Main;
     import org.hyperskill.hstest.dynamic.input.DynamicTestingMethod;
     import org.hyperskill.hstest.stage.StageTest;
     import org.hyperskill.hstest.testcase.CheckResult;
@@ -336,7 +335,7 @@ files:
 
         @DynamicTestingMethod
         public CheckResult test1_testMenu() {
-            TestedProgram program = new TestedProgram(Main.class);
+            TestedProgram program = new TestedProgram();
             String output = program.start("-databaseFileName", "carsharing");
 
             if (!output.contains("1. Log in as a manager")) {
@@ -377,7 +376,7 @@ files:
         @DynamicTestingMethod
         public CheckResult test2_ifDatabaseExist() {
 
-            TestedProgram program = new TestedProgram(Main.class);
+            TestedProgram program = new TestedProgram();
             program.start("-databaseFileName", "carsharing");
             program.execute("0");
 
@@ -431,7 +430,7 @@ files:
         @DynamicTestingMethod
         public CheckResult test6_testAddCompany() {
 
-            TestedProgram program = new TestedProgram(Main.class);
+            TestedProgram program = new TestedProgram();
             program.start("-databaseFileName", "carsharing");
 
             db.clearCustomerTable();
@@ -501,7 +500,7 @@ files:
         @DynamicTestingMethod
         public CheckResult test7_testAddCar() {
 
-            TestedProgram program = new TestedProgram(Main.class);
+            TestedProgram program = new TestedProgram();
             program.start("-databaseFileName", "carsharing");
             String output;
 
@@ -626,7 +625,7 @@ files:
         @DynamicTestingMethod
         public CheckResult test8_testAddCustomer() {
 
-            TestedProgram program = new TestedProgram(Main.class);
+            TestedProgram program = new TestedProgram();
             String output = program.start("-databaseFileName", "carsharing");
 
             db.clearCustomerTable();
@@ -715,7 +714,7 @@ files:
         @DynamicTestingMethod
         public CheckResult test9_testRentCar() {
 
-            TestedProgram program = new TestedProgram(Main.class);
+            TestedProgram program = new TestedProgram();
             String output;
             program.start("-databaseFileName", "carsharing");
 
@@ -1153,13 +1152,13 @@ files:
 - name: src/carsharing/model/DAOException.java
   visible: true
   learner_created: true
-- name: src/carsharing/db/carsharing.mv.db
+- name: log.txt.1
   visible: true
   learner_created: true
 - name: log.txt
   visible: true
   learner_created: true
-- name: log.txt.1
+- name: src/carsharing/db/carsharing.mv.db
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/projects/140/stages/761/implement#comment
@@ -1169,5 +1168,5 @@ feedback:
     Wrong answer in test #5
 
     Your &#39;COMPANY&#39; table doesn&#39;t contain column named &#39;CUSTOMER_ID&#39;.
-  time: Fri, 29 Jan 2021 18:41:48 UTC
+  time: Wed, 10 Feb 2021 17:26:07 UTC
 record: -1

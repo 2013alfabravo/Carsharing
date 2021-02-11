@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/440790/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Fri, 29 Jan 2021 16:53:10 UTC
+update_date: Wed, 10 Feb 2021 17:22:48 UTC
 stages:
 - id: 758
   step: 11501
@@ -19,16 +19,16 @@ stages:
   is_completed: false
 topics:
   0:
+  - title: Immutability
+    theory_id: 7929
+  - title: The concept of patterns
+    theory_id: 3611
   - title: Units of information
     theory_id: 6865
   - title: Files
     theory_id: 6989
-  - title: Introduction to OOP
-    theory_id: 3614
-  - title: The concept of patterns
-    theory_id: 3611
-  - title: Immutability
-    theory_id: 7929
+  - title: Introduction to operating systems
+    theory_id: 9704
   - title: Computer algorithms
     theory_id: 4953
   - title: Introducing the first algorithm
@@ -41,6 +41,10 @@ topics:
     theory_id: 7255
   - title: Dynamic array
     theory_id: 5357
+  - title: Command line overview
+    theory_id: 8977
+  - title: Parameters and options
+    theory_id: 9746
   - title: Introduction to databases
     theory_id: 8497
   - title: What is SQL
@@ -49,12 +53,6 @@ topics:
     theory_id: 7123
   - title: Basic CREATE statement
     theory_id: 9084
-  - title: Introduction to operating systems
-    theory_id: 9704
-  - title: Command line overview
-    theory_id: 8977
-  - title: Parameters and options
-    theory_id: 9746
   - title: 'Hashing: overview'
     theory_id: 9831
   - title: Hash table
@@ -93,6 +91,8 @@ topics:
     theory_id: 3575
   - title: Map
     theory_id: 3558
+  - title: Introduction to OOP
+    theory_id: 3614
   - title: Introduction to Java
     theory_id: 3500
   - title: Basic literals
@@ -103,10 +103,6 @@ topics:
     theory_id: 3749
   - title: Types and variables
     theory_id: 3518
-  - title: Sizes and ranges
-    theory_id: 3532
-  - title: Type casting
-    theory_id: 3510
   - title: Comments
     theory_id: 3520
   - title: Naming variables
@@ -137,6 +133,10 @@ topics:
     theory_id: 3507
   - title: Switch statement
     theory_id: 3504
+  - title: Sizes and ranges
+    theory_id: 3532
+  - title: Type casting
+    theory_id: 3510
   - title: Calling a method
     theory_id: 10973
   - title: Declaring a method
