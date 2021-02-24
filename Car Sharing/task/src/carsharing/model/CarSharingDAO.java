@@ -1,12 +1,10 @@
 package carsharing.model;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.*;
 
-// fixme for testing remove IF NOT EXISTS from table creation queries
 public class CarSharingDAO {
     private static final String CREATE_CUSTOMER_TABLE = "CREATE TABLE IF NOT EXISTS customer (" +
             "id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, " +
@@ -43,12 +41,12 @@ public class CarSharingDAO {
 
         LOGGER.setLevel(Level.INFO);
 
-        Handler handler;
-        try {
-            handler = new FileHandler("log.txt", true);
-        } catch (IOException e) {
-            handler = new ConsoleHandler();
-        }
+        Handler handler = new ConsoleHandler();
+//        try {
+//            handler = new FileHandler("log.txt", true);
+//        } catch (IOException e) {
+//            handler = new ConsoleHandler();
+//        }
 
         handler.setFormatter(new SimpleFormatter());
         LOGGER.addHandler(handler);

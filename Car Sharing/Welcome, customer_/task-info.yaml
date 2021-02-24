@@ -1152,24 +1152,6 @@ files:
 - name: src/carsharing/model/DAOException.java
   visible: true
   learner_created: true
-- name: log.txt.1
-  visible: true
-  learner_created: true
-- name: log.txt
-  visible: true
-  learner_created: true
-- name: log.txt.3
-  visible: true
-  learner_created: true
-- name: log.txt.2
-  visible: true
-  learner_created: true
-- name: log.txt.5
-  visible: true
-  learner_created: true
-- name: log.txt.4
-  visible: true
-  learner_created: true
 - name: src/carsharing/db/carsharing.mv.db
   visible: true
   learner_created: true
@@ -1177,5 +1159,5 @@ feedback_link: https://hyperskill.org/projects/140/stages/761/implement#comment
 status: Solved
 feedback:
   message: Congratulations!
-  time: Wed, 24 Feb 2021 04:18:48 UTC
+  time: Wed, 24 Feb 2021 04:57:04 UTC
 record: 4
