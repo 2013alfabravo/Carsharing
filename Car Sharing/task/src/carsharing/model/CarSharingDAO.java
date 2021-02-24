@@ -10,7 +10,7 @@ import java.util.logging.*;
 public class CarSharingDAO {
     private static final String CREATE_CUSTOMER_TABLE = "CREATE TABLE IF NOT EXISTS customer (" +
             "id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, " +
-            "rented_car_id INT DEFAULT NULL, CONSTRAINT fk_car_id FOREIGN KEY (rented_car_id) " +
+            "rented_car_id INT, CONSTRAINT fk_car FOREIGN KEY (rented_car_id) " +
             "REFERENCES car(id))";
     private static final String CREATE_COMPANY_TABLE = "CREATE TABLE IF NOT EXISTS company (" +
             "id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL)";

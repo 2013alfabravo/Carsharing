@@ -17,7 +17,7 @@ public class Controller {
     }
 
     public void run() {
-        carsharingDAO.dropTables();     // fixme for tests only
+//        carsharingDAO.dropTables();
         carsharingDAO.createCompanyTable();
         carsharingDAO.createCarTable();
         carsharingDAO.createCustomerTable();

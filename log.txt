@@ -1,0 +1,10 @@
+февр. 24, 2021 8:15:59 AM carsharing.model.CarSharingDAO <init>
+INFO: Initiated.
+февр. 24, 2021 8:15:59 AM carsharing.model.CarSharingDAO createTable
+INFO: prep0: CREATE TABLE IF NOT EXISTS company (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL)
+февр. 24, 2021 8:15:59 AM carsharing.model.CarSharingDAO createTable
+INFO: prep1: CREATE TABLE IF NOT EXISTS car (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, company_id INT NOT NULL, customer_id INT DEFAULT NULL, CONSTRAINT fk_company FOREIGN KEY (company_id) REFERENCES company(id))
+февр. 24, 2021 8:15:59 AM carsharing.model.CarSharingDAO createTable
+INFO: prep2: CREATE TABLE IF NOT EXISTS customer (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL, rented_car_id INT, CONSTRAINT fk_car FOREIGN KEY (rented_car_id) REFERENCES car(id))
+февр. 24, 2021 8:16:24 AM carsharing.model.CarSharingDAO findAllCustomers
+INFO: prep3: SELECT * FROM customer ORDER BY id
